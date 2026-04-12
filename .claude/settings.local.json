@@ -36,7 +36,8 @@
       "Read(//c/Users/henri/Documents/Projetos/Casas Geriatricas/$APPDATA/**)",
       "Read(//c/Users/henri/Documents/Projetos/Casas Geriatricas/$LOCALAPPDATA/**)",
       "Bash(find /c/Users/henri -name auth.json -path */vercel/*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(curl:*)"
     ]
   }
 }
