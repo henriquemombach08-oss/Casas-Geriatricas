@@ -1,0 +1,497 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  admin
+  director
+  nurse
+  caregiver
+  admin_finance
+}
+
+enum ResidentStatus {
+  active
+  inactive
+  discharged
+}
+
+enum ResidentGender {
+  M
+  F
+  O
+}
+
+enum DocumentType {
+  rg
+  cpf
+  driver_license
+  passport
+  medical_report
+  insurance
+  income_statement
+  other
+}
+
+enum DocumentStatus {
+  valid
+  expiring_soon
+  expired
+}
+
+enum MaritalStatus {
+  single
+  married
+  widowed
+  divorced
+}
+
+enum BloodType {
+  O_pos  @map("O+")
+  O_neg  @map("O-")
+  A_pos  @map("A+")
+  A_neg  @map("A-")
+  B_pos  @map("B+")
+  B_neg  @map("B-")
+  AB_pos @map("AB+")
+  AB_neg @map("AB-")
+  unknown
+}
+
+enum MeasurementUnit {
+  mg
+  ml
+  comp
+  gotas
+  mcg
+  g
+  ui
+  other
+}
+
+enum MedicationStatus {
+  active
+  inactive
+}
+
+enum MedicationLogStatus {
+  administered
+  refused
+  missed
+  delayed
+  partially_administered
+  not_available
+}
+
+enum WorkShift {
+  morning
+  afternoon
+  night
+  full_day
+}
+
+enum FinancialType {
+  charge
+  payment
+  refund
+  adjustment
+}
+
+enum FinancialStatus {
+  pending
+  paid
+  overdue
+  canceled
+}
+
+enum PaymentMethod {
+  cash
+  check
+  bank_transfer
+  credit_card
+  other
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model House {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  city      String?
+  state     String?  @db.VarChar(2)
+  zipCode   String?  @map("zip_code") @db.VarChar(10)
+  phone     String?  @db.VarChar(20)
+  email     String?
+  ownerName String?  @map("owner_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users                User[]
+  residents            Resident[]
+  documents            Document[]
+  workSchedules        WorkSchedule[]
+  financialRecords     FinancialRecord[]
+  auditLogs            AuditLog[]
+  notifications        Notification[]
+  pharmacyIntegrations PharmacyIntegration[]
+
+  @@map("houses")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  houseId      String    @map("house_id")
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String
+  role         UserRole
+  phone        String?   @db.VarChar(20)
+  active       Boolean   @default(true)
+  lastLogin    DateTime? @map("last_login")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  house             House              @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  workSchedules     WorkSchedule[]
+  medicationLogs    MedicationLog[]
+  documentsUploaded Document[]
+  auditLogs         AuditLog[]
+  notifications     Notification[]
+  refreshTokens     RefreshToken[]
+
+  @@index([houseId])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Resident {
+  id                            String         @id @default(uuid())
+  houseId                       String         @map("house_id")
+
+  // Dados pessoais
+  name                          String
+  cpf                           String         @unique @db.VarChar(11)
+  rg                            String?        @db.VarChar(20)
+  birthDate                     DateTime       @map("birth_date") @db.Date
+  gender                        ResidentGender @default(M)
+  maritalStatus                 MaritalStatus? @map("marital_status")
+  nationality                   String?        @default("Brasileira") @db.VarChar(100)
+
+  // Contato
+  phone                         String?        @db.VarChar(20)
+  email                         String?
+
+  // Endereço
+  address                       String?        @db.VarChar(500)
+  addressNumber                 String?        @map("address_number") @db.VarChar(20)
+  addressComplement             String?        @map("address_complement") @db.VarChar(255)
+  city                          String?        @db.VarChar(100)
+  state                         String?        @db.VarChar(2)
+  zipCode                       String?        @map("zip_code") @db.VarChar(10)
+
+  // Emergência
+  emergencyContactName          String         @map("emergency_contact_name")
+  emergencyContactPhone         String         @map("emergency_contact_phone") @db.VarChar(20)
+  emergencyContactRelationship  String?        @map("emergency_contact_relationship") @db.VarChar(100)
+  emergencyContactEmail         String?        @map("emergency_contact_email")
+
+  // Saúde
+  medicalHistory                Json?          @map("medical_history") @default("{}")
+  bloodType                     BloodType?     @map("blood_type")
+
+  // Foto
+  photoUrl                      String?        @map("photo_url") @db.VarChar(500)
+  photoUpdatedAt                DateTime?      @map("photo_updated_at")
+
+  // Status
+  admissionDate                 DateTime       @map("admission_date") @db.Date
+  dischargeDate                 DateTime?      @map("discharge_date") @db.Date
+  status                        ResidentStatus @default(active)
+  reasonIfInactive              String?        @map("reason_if_inactive") @db.VarChar(500)
+
+  // Notas
+  notes                         String?        @db.Text
+  specialNeeds                  String?        @map("special_needs") @db.Text
+
+  // Auditoria
+  createdBy                     String?        @map("created_by")
+  updatedBy                     String?        @map("updated_by")
+  deletedAt                     DateTime?      @map("deleted_at")
+  createdAt                     DateTime       @default(now()) @map("created_at")
+  updatedAt                     DateTime       @updatedAt @map("updated_at")
+
+  house            House             @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  documents        Document[]
+  medications      Medication[]
+  medicationLogs   MedicationLog[]
+  visitors         Visitor[]
+  financialRecords FinancialRecord[]
+
+  @@index([houseId])
+  @@map("residents")
+}
+
+model Document {
+  id          String         @id @default(uuid())
+  residentId  String         @map("resident_id")
+  houseId     String         @map("house_id")
+  type        DocumentType
+  name        String?        @db.VarChar(255)
+  description String?        @db.VarChar(500)
+  fileUrl     String         @map("file_url") @db.VarChar(500)
+  fileSize    Int?           @map("file_size")
+  fileType    String?        @map("file_type") @db.VarChar(50)
+  issueDate   DateTime?      @map("issue_date") @db.Date
+  expiresAt   DateTime?      @map("expires_at") @db.Date
+  isExpired   Boolean        @default(false) @map("is_expired")
+  status      DocumentStatus @default(valid)
+  uploadedBy  String         @map("uploaded_by")
+  uploadedAt  DateTime       @default(now()) @map("uploaded_at")
+  notes       String?        @db.VarChar(500)
+
+  resident Resident @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  house    House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  uploader User     @relation(fields: [uploadedBy], references: [id])
+
+  @@index([residentId])
+  @@index([houseId])
+  @@index([expiresAt])
+  @@index([isExpired])
+  @@map("documents")
+}
+
+model Medication {
+  id                       String            @id @default(uuid())
+  residentId               String            @map("resident_id")
+
+  // Identificação
+  name                     String
+  activeIngredient         String?           @map("active_ingredient") @db.VarChar(255)
+  dosage                   String?           @db.VarChar(100)
+  measurementUnit          MeasurementUnit?  @map("measurement_unit")
+
+  // Frequência
+  frequency                String?           @db.VarChar(100)
+  frequencyDescription     String?           @map("frequency_description") @db.VarChar(255)
+  timesPerDay              Int?              @map("times_per_day")
+  scheduledTimes           String[]          @map("scheduled_times") // ['08:00', '16:00']
+
+  // Período
+  startDate                DateTime          @map("start_date") @db.Date
+  endDate                  DateTime?         @map("end_date") @db.Date
+  prescriptionDate         DateTime?         @map("prescription_date") @db.Date
+
+  // Prescritor
+  prescriberName           String?           @map("prescriber_name")
+  prescriberCrm            String?           @map("prescriber_crm") @db.VarChar(20)
+  prescriberPhone          String?           @map("prescriber_phone") @db.VarChar(20)
+  prescriberEmail          String?           @map("prescriber_email")
+
+  // Farmácia
+  pharmacyCode             String?           @map("pharmacy_code") @db.VarChar(50)
+  pharmacyName             String?           @map("pharmacy_name") @db.VarChar(255)
+  pharmacyBatchNumber      String?           @map("pharmacy_batch_number") @db.VarChar(100)
+  pharmacyExpiration       DateTime?         @map("pharmacy_expiration") @db.Date
+  pharmacyCnpj             String?           @map("pharmacy_cnpj") @db.VarChar(14)
+
+  // Alertas e instruções
+  sideEffects              String?           @map("side_effects") @db.Text
+  contraindications        String?           @db.Text
+  interactionWarnings      String?           @map("interaction_warnings") @db.Text
+  specialInstructions      String?           @map("special_instructions") @db.Text
+  instructionsForCaregiver String?           @map("instructions_for_caregiver") @db.Text
+
+  // Status
+  status                   MedicationStatus  @default(active)
+  reasonIfInactive         String?           @map("reason_if_inactive") @db.VarChar(500)
+  notes                    String?           @db.Text
+
+  // Auditoria
+  createdBy                String?           @map("created_by")
+  updatedBy                String?           @map("updated_by")
+  createdAt                DateTime          @default(now()) @map("created_at")
+  updatedAt                DateTime          @updatedAt @map("updated_at")
+
+  resident Resident        @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  logs     MedicationLog[]
+
+  @@index([residentId])
+  @@index([status])
+  @@map("medications")
+}
+
+model MedicationLog {
+  id                  String              @id @default(uuid())
+  medicationId        String              @map("medication_id")
+  residentId          String              @map("resident_id")
+  administeredBy      String              @map("administered_by")
+  scheduledTime       String?             @map("scheduled_time") @db.VarChar(5)  // "08:00"
+  administeredAt      DateTime?           @map("administered_at")
+  status              MedicationLogStatus @default(administered)
+  dosageActuallyGiven String?             @map("dosage_actually_given") @db.VarChar(100)
+  reasonIfNotGiven    String?             @map("reason_if_not_given") @db.Text
+  residentComplaint   String?             @map("resident_complaint") @db.Text
+  notes               String?             @db.Text
+  createdAt           DateTime            @default(now()) @map("created_at")
+
+  medication      Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  resident        Resident   @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  administratedBy User       @relation(fields: [administeredBy], references: [id])
+
+  @@index([medicationId])
+  @@index([residentId])
+  @@index([administeredAt(sort: Desc)])
+  @@index([scheduledTime])
+  @@map("medication_logs")
+}
+
+model PharmacyIntegration {
+  id           String    @id @default(uuid())
+  houseId      String    @map("house_id")
+  pharmacyName String    @map("pharmacy_name") @db.VarChar(255)
+  pharmacyCnpj String    @map("pharmacy_cnpj") @db.VarChar(14)
+  apiEndpoint  String?   @map("api_endpoint") @db.VarChar(500)
+  apiKey       String?   @map("api_key") @db.VarChar(255)
+  active       Boolean   @default(true)
+  lastSync     DateTime? @map("last_sync")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([houseId])
+  @@map("pharmacy_integrations")
+}
+
+model WorkSchedule {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  houseId   String    @map("house_id")
+  date      DateTime  @db.Date
+  shift     WorkShift
+  startTime String?   @map("start_time") @db.VarChar(5) // "08:00"
+  endTime   String?   @map("end_time") @db.VarChar(5)   // "16:00"
+  confirmed Boolean   @default(false)
+  notes     String?   @db.Text
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date, shift])
+  @@index([userId])
+  @@index([date])
+  @@index([houseId])
+  @@map("work_schedules")
+}
+
+model Visitor {
+  id           String    @id @default(uuid())
+  residentId   String    @map("resident_id")
+  name         String
+  relationship String?   @db.VarChar(100)
+  phone        String?   @db.VarChar(20)
+  email        String?
+  visitDate    DateTime  @map("visit_date") @db.Date
+  visitTimeIn  String?   @map("visit_time_in") @db.VarChar(5)
+  visitTimeOut String?   @map("visit_time_out") @db.VarChar(5)
+  notes        String?   @db.Text
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  resident Resident @relation(fields: [residentId], references: [id], onDelete: Cascade)
+
+  @@index([residentId])
+  @@index([visitDate])
+  @@map("visitors")
+}
+
+model FinancialRecord {
+  id            String          @id @default(uuid())
+  residentId    String          @map("resident_id")
+  houseId       String          @map("house_id")
+  type          FinancialType
+  amount        Decimal         @db.Decimal(10, 2)
+  description   String?         @db.VarChar(500)
+  dueDate       DateTime?       @map("due_date") @db.Date
+  paidDate      DateTime?       @map("paid_date") @db.Date
+  paymentMethod PaymentMethod?  @map("payment_method")
+  invoiceNumber String?         @map("invoice_number") @db.VarChar(50)
+  nfeNumber     String?         @map("nfe_number") @db.VarChar(100)
+  status        FinancialStatus @default(pending)
+  notes         String?         @db.Text
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  resident Resident @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  house    House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([residentId])
+  @@index([houseId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("financial_records")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  houseId    String   @map("house_id")
+  userId     String?  @map("user_id")
+  action     String   @db.VarChar(255)
+  entityType String?  @map("entity_type") @db.VarChar(100)
+  entityId   String?  @map("entity_id")
+  oldValues  Json?    @map("old_values")
+  newValues  Json?    @map("new_values")
+  ipAddress  String?  @map("ip_address") @db.VarChar(45)
+  userAgent  String?  @map("user_agent") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  user  User? @relation(fields: [userId], references: [id])
+
+  @@index([houseId])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  houseId    String   @map("house_id")
+  title      String
+  body       String   @db.Text
+  type       String   @db.VarChar(50)
+  channel    String   @db.VarChar(20) // in_app, sms, whatsapp, email
+  read       Boolean  @default(false)
+  entityType String?  @map("entity_type") @db.VarChar(50)
+  entityId   String?  @map("entity_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt(sort: Desc)])
+  @@map("notifications")
+}

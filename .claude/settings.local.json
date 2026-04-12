@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(grep -rn \"active: true\\\\|active: false\\\\|active: bool\" 'C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\api\\\\src' --include=*.ts)",
+      "Bash(ls \"C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\web\\\\src\\\\app\\\\\\(dashboard\\)\\\\medications\\\\page.tsx\" \"C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\web\\\\src\\\\app\\\\\\(dashboard\\)\\\\medications\\\\schedule\\\\page.tsx\" \"C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\web\\\\src\\\\app\\\\\\(dashboard\\)\\\\medications\\\\new\\\\page.tsx\" \"C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\web\\\\src\\\\app\\\\\\(dashboard\\)\\\\medications\\\\[id]\\\\page.tsx\" \"C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\web\\\\src\\\\app\\\\\\(dashboard\\)\\\\medications\\\\[id]\\\\edit\\\\page.tsx\")",
+      "Bash(winget upgrade:*)",
+      "Bash(node:*)",
+      "Bash(\"C:\\\\Users\\\\henri\\\\Documents\\\\Projetos\\\\Casas Geriatricas\\\\apps\\\\api\\\\.env\":*)",
+      "Bash(pnpm install:*)",
+      "Bash(npm install:*)",
+      "Bash(where pnpm:*)",
+      "Bash(ls /c/Users/henri/AppData/Roaming/npm/pnpm*)",
+      "Bash(ls /c/Users/henri/AppData/Local/pnpm*)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm install:*)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm approve-builds:*)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm --filter api db:generate)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm --filter api db:push)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm --filter api db:seed)",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "mcp__claude_ai_Supabase__list_projects",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm typecheck:*)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm --filter api test)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm --filter api add -D ts-jest @types/jest)",
+      "Bash(timeout 10 /c/Users/henri/AppData/Roaming/npm/pnpm dev)",
+      "Bash(/c/Users/henri/AppData/Roaming/npm/pnpm --filter api add dotenv)",
+      "Bash(timeout 8 /c/Users/henri/AppData/Roaming/npm/pnpm dev)",
+      "Bash(ls:*)",
+      "Bash(find \"C:/Users/henri/Documents/Projetos/Casas Geriatricas/apps/web/src/app/\\(dashboard\\)\" -name \"*.tsx\")",
+      "Bash(pnpm --filter web typecheck)",
+      "Bash(pnpm --filter web dev)"
+    ]
+  }
+}
