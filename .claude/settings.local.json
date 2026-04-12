@@ -29,7 +29,14 @@
       "Bash(ls:*)",
       "Bash(find \"C:/Users/henri/Documents/Projetos/Casas Geriatricas/apps/web/src/app/\\(dashboard\\)\" -name \"*.tsx\")",
       "Bash(pnpm --filter web typecheck)",
-      "Bash(pnpm --filter web dev)"
+      "Bash(pnpm --filter web dev)",
+      "Bash(vercel:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\(''''token'''',''''''''\\)\\)\")",
+      "Read(//c/Users/henri/Documents/Projetos/Casas Geriatricas/$USERPROFILE/.vercel/**)",
+      "Read(//c/Users/henri/Documents/Projetos/Casas Geriatricas/$APPDATA/**)",
+      "Read(//c/Users/henri/Documents/Projetos/Casas Geriatricas/$LOCALAPPDATA/**)",
+      "Bash(find /c/Users/henri -name auth.json -path */vercel/*)",
+      "Bash(python3:*)"
     ]
   }
 }
