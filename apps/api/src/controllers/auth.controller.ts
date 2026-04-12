@@ -6,7 +6,7 @@ import { prisma } from '../lib/prisma.js';
 import { env } from '../config/env.js';
 import { AppError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../middleware/auth.js';
-import type { UserRole } from '@casageri/shared-types';
+type UserRole = 'admin' | 'director' | 'nurse' | 'caregiver' | 'admin_finance';
 
 const registerSchema = Joi.object({
   houseId: Joi.string().uuid().required(),

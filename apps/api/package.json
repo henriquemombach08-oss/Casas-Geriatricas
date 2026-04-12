@@ -16,7 +16,6 @@
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@casageri/shared-types": "workspace:*",
     "@prisma/client": "^5.13.0",
     "@supabase/supabase-js": "^2.43.0",
     "bcryptjs": "^2.4.3",

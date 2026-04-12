@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
-import type { UserRole } from '@casageri/shared-types';
+type UserRole = 'admin' | 'director' | 'nurse' | 'caregiver' | 'admin_finance';
 
 export interface AuthRequest extends Request {
   userId: string;
