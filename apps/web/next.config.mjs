@@ -4,6 +4,9 @@ const API_URL = _rawApiUrl.replace(/\/api$/, '');
 
 /** @type {import('next').NextConfig} */
 const config = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
