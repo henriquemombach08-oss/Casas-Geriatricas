@@ -18,8 +18,8 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      "style-src 'self' 'unsafe-inline'",
+      "font-src 'self'",
       "img-src 'self' data: https://*.supabase.co blob:",
       // Allow same-origin + the API domain + Supabase
       `connect-src 'self' ${apiOrigin} https://*.supabase.co wss://*.supabase.co`,
