@@ -11,6 +11,7 @@ const navItems = [
   { href: '/financial', icon: '💰', label: 'Financeiro' },
   { href: '/reports', icon: '📊', label: 'Relatórios' },
   { href: '/visitors', icon: '👥', label: 'Visitantes' },
+  { href: '/staff', icon: '🧑‍💼', label: 'Funcionários' },
   { href: '/settings', icon: '⚙️', label: 'Configurações' },
 ];
 

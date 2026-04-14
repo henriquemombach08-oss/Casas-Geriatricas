@@ -3,7 +3,9 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { useMedicationsByResident } from '@/hooks/useMedications';
+import { api } from '@/lib/api';
 import type { Medication } from '@/types/medication';
 
 const UNIT_LABELS: Record<string, string> = {
@@ -51,6 +53,27 @@ function MedicationRow({ med }: { med: Medication }) {
   );
 }
 
+function ResidentPicker({ currentId }: { currentId: string }) {
+  const router = useRouter();
+  const { data } = useQuery({
+    queryKey: ['residents-picker'],
+    queryFn: async () => {
+      const res = await api.get<{success: boolean; data: {residents: {id: string; name: string}[]}}>('/residents?limit=100&status=active');
+      return res.data.data?.residents ?? [];
+    },
+  });
+  return (
+    <select
+      className="input max-w-xs"
+      value={currentId}
+      onChange={e => router.push(e.target.value ? `/medications?residentId=${e.target.value}` : '/medications')}
+    >
+      <option value="">Todos os residentes...</option>
+      {(data ?? []).map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+    </select>
+  );
+}
+
 function MedicationsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -90,11 +113,10 @@ function MedicationsContent() {
         </div>
       </div>
 
-      {!residentId && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 text-yellow-800 text-sm">
-          Selecione um residente para ver suas prescrições.
-        </div>
-      )}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Residente</label>
+        <ResidentPicker currentId={residentId} />
+      </div>
 
       {residentId && (
         <>

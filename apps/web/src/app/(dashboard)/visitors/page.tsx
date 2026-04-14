@@ -10,7 +10,6 @@ interface Visitor {
   residentId: string;
   residentName?: string;
   visitorName: string;
-  visitorCpf?: string;
   visitorPhone?: string;
   relationship?: string;
   scheduledAt?: string;
@@ -19,11 +18,22 @@ interface Visitor {
   notes?: string;
 }
 
+interface ResidentOption { id: string; name: string; }
 interface ApiResponse<T> { success: boolean; data: T; }
+
+const emptyForm = {
+  residentId: '',
+  visitorName: '',
+  visitorPhone: '',
+  relationship: '',
+  scheduledAt: '',
+  noSchedule: true,
+  notes: '',
+};
 
 export default function VisitorsPage() {
   const qc = useQueryClient();
-  const [form, setForm] = useState({ visitorName: '', visitorPhone: '', relationship: '', notes: '' });
+  const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
 
   const { data: visitors = [], isLoading } = useQuery({
@@ -31,6 +41,14 @@ export default function VisitorsPage() {
     queryFn: async () => {
       const res = await api.get<ApiResponse<Visitor[]>>('/visitors?limit=50');
       return res.data.data ?? [];
+    },
+  });
+
+  const { data: residentsData } = useQuery({
+    queryKey: ['residents-simple'],
+    queryFn: async () => {
+      const res = await api.get<ApiResponse<{ residents: ResidentOption[] }>>('/residents?limit=100&status=active');
+      return res.data.data?.residents ?? [];
     },
   });
 
@@ -45,11 +63,23 @@ export default function VisitorsPage() {
   });
 
   const create = useMutation({
-    mutationFn: () => api.post('/visitors', form),
+    mutationFn: () => {
+      const payload: Record<string, string | undefined> = {
+        residentId: form.residentId || undefined,
+        visitorName: form.visitorName,
+        visitorPhone: form.visitorPhone || undefined,
+        relationship: form.relationship || undefined,
+        notes: form.notes || undefined,
+      };
+      if (!form.noSchedule && form.scheduledAt) {
+        payload.scheduledAt = new Date(form.scheduledAt).toISOString();
+      }
+      return api.post('/visitors', payload);
+    },
     onSuccess: () => {
       toast.success('Visita registrada');
       setShowForm(false);
-      setForm({ visitorName: '', visitorPhone: '', relationship: '', notes: '' });
+      setForm(emptyForm);
       qc.invalidateQueries({ queryKey: ['visitors'] });
     },
     onError: () => toast.error('Erro ao registrar visita'),
@@ -64,10 +94,7 @@ export default function VisitorsPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Visitantes</h1>
           <p className="mt-1 text-sm text-gray-500">Registro de visitas dos residentes</p>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="btn-primary text-sm"
-        >
+        <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm">
           + Nova Visita
         </button>
       </div>
@@ -76,6 +103,16 @@ export default function VisitorsPage() {
         <div className="card space-y-4">
           <h2 className="font-semibold text-gray-800 dark:text-white">Registrar Visita</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="label">Residente visitado</label>
+              <select className="input" value={form.residentId}
+                onChange={e => setForm(f => ({ ...f, residentId: e.target.value }))}>
+                <option value="">Selecionar residente...</option>
+                {(residentsData ?? []).map((r: ResidentOption) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </div>
             <div>
               <label className="label">Nome do visitante *</label>
               <input className="input" value={form.visitorName}
@@ -87,11 +124,28 @@ export default function VisitorsPage() {
                 onChange={e => setForm(f => ({ ...f, visitorPhone: e.target.value }))} />
             </div>
             <div>
-              <label className="label">Parentesco</label>
-              <input className="input" placeholder="ex: filho, cônjuge" value={form.relationship}
+              <label className="label">Parentesco / Relação</label>
+              <input className="input" placeholder="ex: filho, amigo" value={form.relationship}
                 onChange={e => setForm(f => ({ ...f, relationship: e.target.value }))} />
             </div>
-            <div>
+            <div className="sm:col-span-2">
+              <div className="flex items-center gap-2 mb-2">
+                <input type="checkbox" id="noSchedule" checked={form.noSchedule}
+                  onChange={e => setForm(f => ({ ...f, noSchedule: e.target.checked }))}
+                  className="rounded" />
+                <label htmlFor="noSchedule" className="text-sm text-gray-600 dark:text-gray-300">
+                  Sem horário definido
+                </label>
+              </div>
+              {!form.noSchedule && (
+                <div>
+                  <label className="label">Data e horário da visita</label>
+                  <input type="datetime-local" className="input" value={form.scheduledAt}
+                    onChange={e => setForm(f => ({ ...f, scheduledAt: e.target.value }))} />
+                </div>
+              )}
+            </div>
+            <div className="sm:col-span-2">
               <label className="label">Observações</label>
               <input className="input" value={form.notes}
                 onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
@@ -100,7 +154,7 @@ export default function VisitorsPage() {
           <div className="flex gap-2">
             <button onClick={() => create.mutate()} disabled={!form.visitorName || create.isPending}
               className="btn-primary text-sm">
-              {create.isPending ? 'Salvando...' : 'Salvar'}
+              {create.isPending ? 'Salvando...' : 'Registrar Visita'}
             </button>
             <button onClick={() => setShowForm(false)} className="btn-secondary text-sm">Cancelar</button>
           </div>
@@ -111,12 +165,12 @@ export default function VisitorsPage() {
         {isLoading ? (
           <div className="p-8 text-center text-gray-400">Carregando...</div>
         ) : visitors.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">Nenhuma visita registrada hoje.</div>
+          <div className="p-8 text-center text-gray-400">Nenhuma visita registrada.</div>
         ) : (
           <table className="min-w-full divide-y divide-gray-100 text-sm">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                {['Visitante', 'Parentesco', 'Entrada', 'Saída', 'Ações'].map(h => (
+                {['Visitante', 'Residente', 'Parentesco', 'Agendado', 'Entrada', 'Saída', 'Ações'].map(h => (
                   <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">{h}</th>
                 ))}
               </tr>
@@ -124,8 +178,10 @@ export default function VisitorsPage() {
             <tbody className="divide-y divide-gray-100 bg-white dark:bg-gray-900">
               {visitors.map(v => (
                 <tr key={v.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                  <td className="px-4 py-3 font-medium">{v.visitorName}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{v.visitorName}</td>
+                  <td className="px-4 py-3 text-gray-500">{v.residentName || '—'}</td>
                   <td className="px-4 py-3 text-gray-500">{v.relationship || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500">{fmt(v.scheduledAt)}</td>
                   <td className="px-4 py-3 text-gray-500">{fmt(v.checkedInAt)}</td>
                   <td className="px-4 py-3 text-gray-500">{fmt(v.checkedOutAt)}</td>
                   <td className="px-4 py-3">
@@ -141,9 +197,7 @@ export default function VisitorsPage() {
                         Check-out
                       </button>
                     )}
-                    {v.checkedOutAt && (
-                      <span className="text-xs text-gray-400">Concluída</span>
-                    )}
+                    {v.checkedOutAt && <span className="text-xs text-gray-400">Concluída</span>}
                   </td>
                 </tr>
               ))}

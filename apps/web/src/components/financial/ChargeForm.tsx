@@ -25,7 +25,7 @@ interface Props {
 }
 
 export default function ChargeForm({ onSuccess, onCancel }: Props) {
-  const { data: residentsData } = useResidents({ page: 1, limit: 200, status: 'active' });
+  const { data: residentsData } = useResidents({ page: 1, limit: 100, status: 'active' });
   const create = useCreateFinancial();
 
   const [form, setForm] = useState<CreateFinancialInput>({
