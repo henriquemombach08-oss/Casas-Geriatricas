@@ -45,7 +45,8 @@ const config = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Apply to pages only — exclude Next.js static assets, images and icons
+        source: '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
         headers: securityHeaders,
       },
     ];
