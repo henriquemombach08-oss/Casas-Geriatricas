@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import {
   useFinancialReportDashboard,
   useAccountsReceivable,
@@ -11,8 +12,14 @@ import {
 import MetricsGrid from '@/components/reports/MetricsGrid';
 import FilterBar from '@/components/reports/FilterBar';
 import ExportButtons from '@/components/reports/ExportButtons';
-import CashFlowBarChart from '@/components/reports/charts/CashFlowBarChart';
 import TableReport from '@/components/reports/TableReport';
+import { Skeleton } from '@/components/shared/Skeleton';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+
+const CashFlowBarChart = dynamic(() => import('@/components/reports/charts/CashFlowBarChart'), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+});
 
 function fmt(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -37,10 +44,11 @@ export default function FinancialReportPage() {
   ] : [];
 
   return (
-    <div className="space-y-6">
+    <ErrorBoundary>
+    <div className="space-y-6 animate-fade-in">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Relatório Financeiro</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Relatório Financeiro</h1>
           <p className="mt-1 text-sm text-gray-500">Fluxo de caixa, inadimplência e previsões</p>
         </div>
         <ExportButtons
@@ -129,5 +137,6 @@ export default function FinancialReportPage() {
         </div>
       )}
     </div>
+    </ErrorBoundary>
   );
 }

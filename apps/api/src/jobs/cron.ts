@@ -169,5 +169,24 @@ export function startCronJobs(): void {
     logger.info({ count: deleted.count }, 'Cleaned old audit logs');
   });
 
+  // Daily at 03:00: backup health-check — log active house and resident counts as a baseline snapshot.
+  // NOTE: Point-in-Time Recovery is enabled on Supabase (Pro plan). This cron validates DB connectivity
+  // and logs a snapshot so incidents can be correlated to a known-good state.
+  cron.schedule('0 3 * * *', async () => {
+    try {
+      const [houseCount, residentCount, userCount] = await Promise.all([
+        prisma.house.count(),
+        prisma.resident.count({ where: { deletedAt: null } }),
+        prisma.user.count({ where: { active: true } }),
+      ]);
+      logger.info(
+        { houseCount, residentCount, userCount, timestamp: new Date().toISOString() },
+        'Daily backup health-check — DB snapshot OK',
+      );
+    } catch (err) {
+      logger.error({ err }, 'Daily backup health-check FAILED — investigate immediately');
+    }
+  });
+
   logger.info('Cron jobs started');
 }

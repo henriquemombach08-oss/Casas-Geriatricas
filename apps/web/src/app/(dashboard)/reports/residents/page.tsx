@@ -1,11 +1,21 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useResidentsDashboard, useResidentsOccupancy } from '@/hooks/useReports';
 import MetricsGrid from '@/components/reports/MetricsGrid';
 import FilterBar from '@/components/reports/FilterBar';
-import OccupancyAreaChart from '@/components/reports/charts/OccupancyAreaChart';
-import DistributionPieChart from '@/components/reports/charts/DistributionPieChart';
+import { Skeleton } from '@/components/shared/Skeleton';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+
+const OccupancyAreaChart = dynamic(() => import('@/components/reports/charts/OccupancyAreaChart'), {
+  loading: () => <Skeleton className="h-52 w-full" />,
+  ssr: false,
+});
+const DistributionPieChart = dynamic(() => import('@/components/reports/charts/DistributionPieChart'), {
+  loading: () => <Skeleton className="h-52 w-full" />,
+  ssr: false,
+});
 
 export default function ResidentsReportPage() {
   const [period, setPeriod] = useState('month');
@@ -26,9 +36,10 @@ export default function ResidentsReportPage() {
   const diagData = dash?.diagnoses.slice(0, 6).map((d) => ({ name: d.name, value: d.count })) ?? [];
 
   return (
-    <div className="space-y-6">
+    <ErrorBoundary>
+    <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Relatório de Residentes</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Relatório de Residentes</h1>
         <p className="mt-1 text-sm text-gray-500">Ocupação, perfil dos residentes e distribuição</p>
       </div>
 
@@ -79,5 +90,6 @@ export default function ResidentsReportPage() {
         )}
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

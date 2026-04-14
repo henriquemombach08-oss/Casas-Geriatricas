@@ -1,12 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useMedicationsDashboard, useMedicationsAdherence, useGenerateMedicationsPDF, useExportMedicationsExcel } from '@/hooks/useReports';
 import MetricsGrid from '@/components/reports/MetricsGrid';
 import FilterBar from '@/components/reports/FilterBar';
 import ExportButtons from '@/components/reports/ExportButtons';
-import AdherenceLineChart from '@/components/reports/charts/AdherenceLineChart';
 import TableReport from '@/components/reports/TableReport';
+import { Skeleton } from '@/components/shared/Skeleton';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+
+const AdherenceLineChart = dynamic(() => import('@/components/reports/charts/AdherenceLineChart'), {
+  loading: () => <Skeleton className="h-60 w-full" />,
+  ssr: false,
+});
 
 function currentMonth() {
   const n = new Date();
@@ -31,10 +38,11 @@ export default function MedicationsReportPage() {
   ] : [];
 
   return (
-    <div className="space-y-6">
+    <ErrorBoundary>
+    <div className="space-y-6 animate-fade-in">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Relatório de Medicamentos</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Relatório de Medicamentos</h1>
           <p className="mt-1 text-sm text-gray-500">Adesão ao tratamento e administração de medicamentos</p>
         </div>
         <ExportButtons
@@ -93,5 +101,6 @@ export default function MedicationsReportPage() {
         </div>
       )}
     </div>
+    </ErrorBoundary>
   );
 }

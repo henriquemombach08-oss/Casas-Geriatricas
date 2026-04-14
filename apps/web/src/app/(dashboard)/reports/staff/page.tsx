@@ -6,6 +6,7 @@ import MetricsGrid from '@/components/reports/MetricsGrid';
 import FilterBar from '@/components/reports/FilterBar';
 import ExportButtons from '@/components/reports/ExportButtons';
 import TableReport from '@/components/reports/TableReport';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import type { StaffDashboard } from '@/types/reports';
 
 const PERFORMANCE_COLORS: Record<string, string> = {
@@ -41,10 +42,11 @@ export default function StaffReportPage() {
   ] : [];
 
   return (
-    <div className="space-y-6">
+    <ErrorBoundary>
+    <div className="space-y-6 animate-fade-in">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Relatório de Pessoal</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Relatório de Pessoal</h1>
           <p className="mt-1 text-sm text-gray-500">Escalas, horas trabalhadas e desempenho</p>
         </div>
         <ExportButtons
@@ -105,5 +107,6 @@ export default function StaffReportPage() {
         </div>
       )}
     </div>
+    </ErrorBoundary>
   );
 }

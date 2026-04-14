@@ -5,11 +5,13 @@ import { logout, getStoredUser } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { Notification } from '@casageri/shared-types';
+import { useTheme } from '@/hooks/useTheme';
 
 export function Navbar() {
   const user = getStoredUser();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isDark, toggleTheme] = useTheme();
 
   const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],
@@ -32,6 +34,16 @@ export function Navbar() {
           className="w-full max-w-sm input py-1.5 text-sm"
         />
       </div>
+
+      {/* Dark mode toggle */}
+      <button
+        onClick={toggleTheme}
+        aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg"
+        title={isDark ? 'Modo claro' : 'Modo escuro'}
+      >
+        {isDark ? '☀️' : '🌙'}
+      </button>
 
       {/* Notifications */}
       <div className="relative">
