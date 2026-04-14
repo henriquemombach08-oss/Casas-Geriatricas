@@ -2,6 +2,11 @@
 const _rawApiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
 const API_URL = _rawApiUrl.replace(/\/api$/, '');
 
+// Extract API origin to include in CSP connect-src (handles any Vercel subdomain)
+const apiOrigin = (() => {
+  try { return new URL(API_URL).origin; } catch { return API_URL; }
+})();
+
 const securityHeaders = [
   { key: 'X-DNS-Prefetch-Control',  value: 'on' },
   { key: 'X-Frame-Options',         value: 'DENY' },
@@ -16,7 +21,8 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://*.supabase.co blob:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+      // Allow same-origin + the API domain + Supabase
+      `connect-src 'self' ${apiOrigin} https://*.supabase.co wss://*.supabase.co`,
     ].join('; '),
   },
 ];
