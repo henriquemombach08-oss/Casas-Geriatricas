@@ -10,10 +10,21 @@ import { env } from './config/env.js';
 import { logger } from './lib/logger.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
-import './jobs/processors.js'; // Register Bull processors
-import { startCronJobs } from './jobs/cron.js';
+// Bull processors and cron only run outside serverless (Redis not available on Vercel)
+// VERCEL_ENV is set at runtime; VERCEL is build-only
+const isServerless = !!(process.env.VERCEL_ENV ?? process.env.VERCEL);
+let startCronJobs: (() => void) | undefined;
+if (!isServerless) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('./jobs/processors.js');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  startCronJobs = (require('./jobs/cron.js') as { startCronJobs: () => void }).startCronJobs;
+}
 
 const app = express();
+
+// Trust Vercel's reverse proxy so express-rate-limit can read X-Forwarded-For
+if (isServerless) app.set('trust proxy', 1);
 
 // ─── Security ─────────────────────────────────────────────────────────────────
 app.use(helmet());
@@ -61,7 +72,7 @@ app.use(errorHandler);
 if (!process.env.VERCEL) {
   app.listen(env.PORT, () => {
     logger.info(`🚀 API rodando em http://localhost:${env.PORT}`);
-    startCronJobs();
+    startCronJobs?.();
   });
 }
 

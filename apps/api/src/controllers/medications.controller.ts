@@ -4,7 +4,7 @@ import { prisma } from '../lib/prisma.js';
 import { AppError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../middleware/auth.js';
 import { writeAuditLog } from '../middleware/auditLog.js';
-import { notificationQueue, medicationReminderQueue } from '../jobs/queues.js';
+import { notificationQueue } from '../jobs/queues.js';
 import { logger } from '../lib/logger.js';
 
 // ─── Validation helpers ────────────────────────────────────────────────────
@@ -232,7 +232,7 @@ export async function listByResident(
     const medications = await prisma.medication.findMany({
       where: {
         residentId: resident.id,
-        status: statusFilter as 'active' | 'inactive',
+        status: statusFilter,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -256,7 +256,6 @@ export async function getScheduledNext(
     // Raw query against the VIEW (created in supabase_extras.sql)
     // Fallback: compute from Prisma if VIEW not available
     const now = new Date();
-    const cutoff = new Date(now.getTime() + upcomingMinutes * 60 * 1000);
 
     const activeMeds = await prisma.medication.findMany({
       where: {

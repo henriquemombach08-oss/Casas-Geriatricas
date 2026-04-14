@@ -37,7 +37,23 @@
       "Read(//c/Users/henri/Documents/Projetos/Casas Geriatricas/$LOCALAPPDATA/**)",
       "Bash(find /c/Users/henri -name auth.json -path */vercel/*)",
       "Bash(python3:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(TOKEN=\"vca_4ekPV6UGdlHNhqa9JuRORSZ1GYNqXIlQgLoRXzN0k9u7TFKUL32A3h9B\" curl -s \"https://api.vercel.com/v2/deployments/dpl_8S7kdwCdDoEvevdTNrR2Wk9MXTPg/events?types=stderr,stdout&limit=50\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"vca_4ekPV6UGdlHNhqa9JuRORSZ1GYNqXIlQgLoRXzN0k9u7TFKUL32A3h9B\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas/apps/api\" npx vercel logs \"https://casas-geriatricas-api.vercel.app\" --token \"$TOKEN\")",
+      "Bash(TOKEN=\"vca_4ekPV6UGdlHNhqa9JuRORSZ1GYNqXIlQgLoRXzN0k9u7TFKUL32A3h9B\")",
+      "Bash(npx vercel:*)",
+      "Bash(TOKEN=\"vca_4ekPV6UGdlHNhqa9JuRORSZ1GYNqXIlQgLoRXzN0k9u7TFKUL32A3h9B\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas/apps/api\" npx vercel logs --help)",
+      "mcp__claude_ai_Supabase__get_project",
+      "Bash(TOKEN=\"vca_4ekPV6UGdlHNhqa9JuRORSZ1GYNqXIlQgLoRXzN0k9u7TFKUL32A3h9B\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas/apps/api\" npx vercel deploy --prod --token \"$TOKEN\")",
+      "Bash(TOKEN=\"vca_4ekPV6UGdlHNhqa9JuRORSZ1GYNqXIlQgLoRXzN0k9u7TFKUL32A3h9B\" NEW_URL=\"postgresql://postgres.rychpccraltqgfjhzrem:LVlOzQovkqtsoC5A@aws-0-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1\" curl -s -X PATCH \"https://api.vercel.com/v9/projects/casas-geriatricas-api/env/ASXSjxsoxf8ZypPi\" -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d \"{\"\"value\"\":\"\"$NEW_URL\"\"}\")",
+      "Bash(TOKEN=\"vca_5vEI2d7IvlcReyCorEoH5UFNdS5vnTxZEEVUw3zp6u6D2vc0Ar0nBfGU\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas/apps/api\" npx vercel logs casas-geriatricas-api.vercel.app --token \"$TOKEN\" -j -n 50)",
+      "Bash(TOKEN=\"vca_5vEI2d7IvlcReyCorEoH5UFNdS5vnTxZEEVUw3zp6u6D2vc0Ar0nBfGU\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas/apps/api\" npx vercel logs casas-geriatricas-api.vercel.app --token \"$TOKEN\" --json)",
+      "Bash(TOKEN=\"vca_5vEI2d7IvlcReyCorEoH5UFNdS5vnTxZEEVUw3zp6u6D2vc0Ar0nBfGU\" curl -s \"https://api.vercel.com/v2/deployments/dpl_AsFEFUEnwHb62GeK5Ueg2cyoQvBu/events?limit=100\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"vca_5vEI2d7IvlcReyCorEoH5UFNdS5vnTxZEEVUw3zp6u6D2vc0Ar0nBfGU\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas/apps/api\" npx vercel deploy --prod --token \"$TOKEN\")",
+      "Bash(TOKEN=\"vca_5vEI2d7IvlcReyCorEoH5UFNdS5vnTxZEEVUw3zp6u6D2vc0Ar0nBfGU\" cd \"/c/Users/henri/Documents/Projetos/Casas Geriatricas\" npx vercel deploy --prod --token \"$TOKEN\")",
+      "Bash(TOKEN=\"vca_5vEI2d7IvlcReyCorEoH5UFNdS5vnTxZEEVUw3zp6u6D2vc0Ar0nBfGU\" curl -s \"https://api.vercel.com/v2/deployments/dpl_5aMSoCEWcvifJUGK55qHpmyesHQ2/events?limit=200\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"vca_3n38RIT2ENaP82Z9RycrvnGDx1PZKZEI0YjWFkAbiubLwKK5WD1Mim0B\" curl -s \"https://api.vercel.com/v2/deployments/dpl_5aMSoCEWcvifJUGK55qHpmyesHQ2/events?limit=200\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"vca_3n38RIT2ENaP82Z9RycrvnGDx1PZKZEI0YjWFkAbiubLwKK5WD1Mim0B\" curl -s \"https://api.vercel.com/v9/projects/casas_geriatricas\" -H \"Authorization: Bearer $TOKEN\")"
     ]
   }
 }

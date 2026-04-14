@@ -14,4 +14,4 @@ if (env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
-prisma.$connect().then(() => logger.info('Database connected'));
+void prisma.$connect().then(() => logger.info('Database connected')).catch((err: unknown) => logger.warn({ err }, 'Database connect failed'));

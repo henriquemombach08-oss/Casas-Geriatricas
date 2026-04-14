@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
-import { prisma } from '../lib/prisma.js';
 type UserRole = 'admin' | 'director' | 'nurse' | 'caregiver' | 'admin_finance';
 
 export interface AuthRequest extends Request {

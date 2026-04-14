@@ -2,11 +2,11 @@ import type Bull from 'bull';
 import { notificationQueue, reportQueue, medicationReminderQueue } from './queues.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
-import { sendSms, sendWhatsApp, sendEmail } from '../services/notifications.service.js';
+import { sendSms, sendWhatsApp } from '../services/notifications.service.js';
 
 // ─── Notification jobs ────────────────────────────────────────────────────────
 
-notificationQueue.process('medication-reminder', async (job: Bull.Job) => {
+void notificationQueue.process('medication-reminder', async (job: Bull.Job) => {
   const { medicationId, residentName, medicationName, houseId, scheduledTime, isOverdue } =
     job.data as {
       medicationId: string;
@@ -56,7 +56,7 @@ notificationQueue.process('medication-reminder', async (job: Bull.Job) => {
   }
 });
 
-notificationQueue.process('medication-not-administered', async (job: Bull.Job) => {
+void notificationQueue.process('medication-not-administered', async (job: Bull.Job) => {
   const { userId, residentName, medicationName, scheduledTime, status, reason, houseId, nursePhone, medicationId } = job.data as {
     userId: string;
     residentName: string;
@@ -105,8 +105,8 @@ notificationQueue.process('medication-not-administered', async (job: Bull.Job) =
   }
 });
 
-notificationQueue.process('schedule-created', async (job: Bull.Job) => {
-  const { userId, userName, date, shift, houseId } = job.data as {
+void notificationQueue.process('schedule-created', async (job: Bull.Job) => {
+  const { userId, date, shift, houseId } = job.data as {
     userId: string;
     userName: string;
     date: string;
@@ -144,14 +144,14 @@ notificationQueue.process('schedule-created', async (job: Bull.Job) => {
 
 // ─── Report jobs ──────────────────────────────────────────────────────────────
 
-reportQueue.process('scheduled-report', async (job: Bull.Job) => {
+void reportQueue.process('scheduled-report', (job: Bull.Job) => {
   logger.info({ jobId: job.id }, 'Generating scheduled report');
   // TODO: generate PDF/Excel report and email it
 });
 
 // ─── Medication reminder cron ─────────────────────────────────────────────────
 
-medicationReminderQueue.process('check-upcoming', async (job: Bull.Job) => {
+void medicationReminderQueue.process('check-upcoming', async (job: Bull.Job) => {
   // When called from cron with specific data, use it; otherwise do generic check
   const jobData = job.data as {
     medicationId?: string;

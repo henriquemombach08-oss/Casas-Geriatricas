@@ -12,6 +12,7 @@ const queueOptions: Bull.QueueOptions = {
   },
   // Graceful: don't crash if Redis is unavailable
   createClient: (type) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/consistent-type-imports
     const IORedis = require('ioredis') as typeof import('ioredis').default;
     const client = new IORedis(env.REDIS_URL, {
       maxRetriesPerRequest: null,

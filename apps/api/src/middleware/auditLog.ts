@@ -3,7 +3,7 @@ import type { AuthRequest } from './auth.js';
 import { prisma } from '../lib/prisma.js';
 
 export function auditLog(action: string, entityType: string) {
-  return async (req: AuthRequest, _res: Response, next: NextFunction): Promise<void> => {
+  return (req: AuthRequest, _res: Response, next: NextFunction): void => {
     // Injected into the request for controllers to populate entityId + values
     req.body._audit = { action, entityType };
     next();
