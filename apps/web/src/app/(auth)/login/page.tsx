@@ -30,7 +30,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(values.email, values.password);
-      router.push('/residents');
+      router.push('/dashboard');
     } catch {
       toast.error('Email ou senha incorretos');
     } finally {
