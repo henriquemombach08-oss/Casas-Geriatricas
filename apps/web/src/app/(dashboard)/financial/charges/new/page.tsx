@@ -1,10 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ChargeForm from '@/components/financial/ChargeForm';
 
-export default function NewChargePage() {
+function NewChargeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const residentId = searchParams.get('resident');
@@ -35,5 +36,13 @@ export default function NewChargePage() {
         />
       </div>
     </div>
+  );
+}
+
+export default function NewChargePage() {
+  return (
+    <Suspense fallback={<div className="h-32 animate-pulse rounded-lg bg-gray-100" />}>
+      <NewChargeContent />
+    </Suspense>
   );
 }
