@@ -110,6 +110,54 @@ export function startCronJobs(): void {
     });
   });
 
+  // Daily at 17:00: remind employees who haven't confirmed tomorrow's schedule
+  cron.schedule('0 17 * * *', async () => {
+    try {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      const notConfirmed = await prisma.workSchedule.findMany({
+        where: { scheduleDate: tomorrow, confirmedByUser: false, status: 'scheduled' },
+        include: { user: { select: { id: true, name: true } } },
+      });
+
+      for (const schedule of notConfirmed) {
+        await notificationQueue.add('schedule-reminder', {
+          type: 'schedule_reminder',
+          userId: schedule.userId,
+          scheduleId: schedule.id,
+          message: `Lembrete: você tem escala amanhã (${schedule.shift}). Por favor confirme sua presença.`,
+        });
+      }
+      if (notConfirmed.length > 0) {
+        logger.info({ count: notConfirmed.length }, 'Schedule confirmation reminders queued');
+      }
+    } catch (err) {
+      logger.error({ err }, 'Schedule confirmation cron error');
+    }
+  });
+
+  // Daily at 08:00: mark as no_show schedules from yesterday with no check-in
+  cron.schedule('5 8 * * *', async () => {
+    try {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(0, 0, 0, 0);
+
+      const { count } = await prisma.workSchedule.updateMany({
+        where: { scheduleDate: yesterday, status: 'confirmed', checkedInAt: null },
+        data: { status: 'no_show' },
+      });
+
+      if (count > 0) {
+        logger.info({ count }, 'No-show detection: marked schedules as no_show');
+      }
+    } catch (err) {
+      logger.error({ err }, 'No-show detection cron error');
+    }
+  });
+
   // Monthly: clean audit logs > 30 days
   cron.schedule('0 2 1 * *', async () => {
     const thirtyDaysAgo = new Date();

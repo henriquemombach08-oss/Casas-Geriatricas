@@ -7,6 +7,7 @@ import financialRoutes from './financial.routes.js';
 import visitorsRoutes from './visitors.routes.js';
 import reportsRoutes from './reports.routes.js';
 import notificationsRoutes from './notifications.routes.js';
+import usersRoutes from './users.routes.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
@@ -23,5 +24,6 @@ router.use('/financial', financialRoutes);
 router.use('/visitors', visitorsRoutes);
 router.use('/reports', reportsRoutes);
 router.use('/notifications', notificationsRoutes);
+router.use('/users', usersRoutes);
 
 export default router;

@@ -95,6 +95,15 @@ enum WorkShift {
   afternoon
   night
   full_day
+  on_call
+}
+
+enum ScheduleStatus {
+  scheduled
+  confirmed
+  no_show
+  present
+  excused_absence
 }
 
 enum FinancialType {
@@ -102,13 +111,24 @@ enum FinancialType {
   payment
   refund
   adjustment
+  fine
+}
+
+enum FinancialCategory {
+  monthly_fee
+  medicine
+  supplies
+  extra_service
+  other
 }
 
 enum FinancialStatus {
   pending
   paid
   overdue
+  partially_paid
   canceled
+  disputed
 }
 
 enum PaymentMethod {
@@ -116,6 +136,9 @@ enum PaymentMethod {
   check
   bank_transfer
   credit_card
+  debit_card
+  pix
+  boleto
   other
 }
 
@@ -384,25 +407,43 @@ model PharmacyIntegration {
 }
 
 model WorkSchedule {
-  id        String    @id @default(uuid())
-  userId    String    @map("user_id")
-  houseId   String    @map("house_id")
-  date      DateTime  @db.Date
-  shift     WorkShift
-  startTime String?   @map("start_time") @db.VarChar(5) // "08:00"
-  endTime   String?   @map("end_time") @db.VarChar(5)   // "16:00"
-  confirmed Boolean   @default(false)
-  notes     String?   @db.Text
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id               String         @id @default(uuid())
+  userId           String         @map("user_id")
+  houseId          String         @map("house_id")
+  scheduleDate     DateTime       @map("date") @db.Date
+  shift            WorkShift
+  startTime        String?        @map("start_time") @db.VarChar(5)
+  endTime          String?        @map("end_time") @db.VarChar(5)
+
+  // Confirmação
+  confirmedByUser  Boolean        @default(false) @map("confirmed_by_user")
+  confirmedAt      DateTime?      @map("confirmed_at")
+
+  // Presença
+  checkedInAt      DateTime?      @map("checked_in_at")
+  checkedOutAt     DateTime?      @map("checked_out_at")
+  status           ScheduleStatus @default(scheduled)
+
+  // Notas e ausência
+  notes            String?        @db.Text
+  absenceReason    String?        @map("absence_reason") @db.VarChar(500)
+  absenceApproved  Boolean        @default(false) @map("absence_approved")
+
+  // Auditoria
+  createdBy        String?        @map("created_by")
+  updatedBy        String?        @map("updated_by")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, date, shift])
+  @@unique([userId, scheduleDate, shift])
   @@index([userId])
-  @@index([date])
+  @@index([scheduleDate])
   @@index([houseId])
+  @@index([status])
+  @@index([houseId, scheduleDate(sort: Desc)])
   @@map("work_schedules")
 }
 
@@ -427,21 +468,49 @@ model Visitor {
 }
 
 model FinancialRecord {
-  id            String          @id @default(uuid())
-  residentId    String          @map("resident_id")
-  houseId       String          @map("house_id")
-  type          FinancialType
-  amount        Decimal         @db.Decimal(10, 2)
-  description   String?         @db.VarChar(500)
-  dueDate       DateTime?       @map("due_date") @db.Date
-  paidDate      DateTime?       @map("paid_date") @db.Date
-  paymentMethod PaymentMethod?  @map("payment_method")
-  invoiceNumber String?         @map("invoice_number") @db.VarChar(50)
-  nfeNumber     String?         @map("nfe_number") @db.VarChar(100)
-  status        FinancialStatus @default(pending)
-  notes         String?         @db.Text
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  id              String             @id @default(uuid())
+  residentId      String             @map("resident_id")
+  houseId         String             @map("house_id")
+
+  // Tipo e valor
+  type            FinancialType
+  amount          Decimal            @db.Decimal(10, 2)
+  originalAmount  Decimal?           @map("original_amount") @db.Decimal(10, 2)
+  description     String             @db.VarChar(500)
+  category        FinancialCategory  @default(monthly_fee)
+
+  // Datas
+  issueDate       DateTime           @map("issue_date") @db.Date
+  dueDate         DateTime?          @map("due_date") @db.Date
+  paidDate        DateTime?          @map("paid_date") @db.Date
+
+  // Pagamento
+  paymentMethod   PaymentMethod?     @map("payment_method")
+  bankAccount     String?            @map("bank_account") @db.VarChar(50)
+  checkNumber     String?            @map("check_number") @db.VarChar(20)
+
+  // Status
+  status          FinancialStatus    @default(pending)
+
+  // NF-e
+  nfeNumber       String?            @map("nfe_number") @db.VarChar(100)
+  nfeIssuedAt     DateTime?          @map("nfe_issued_at")
+  nfeSeries       String?            @map("nfe_series") @db.VarChar(10)
+  nfeRpsNumber    String?            @map("nfe_rps_number") @db.VarChar(20)
+
+  // Referência
+  invoiceNumber   String?            @map("invoice_number") @db.VarChar(50)
+  referenceMonth  DateTime?          @map("reference_month") @db.Date
+
+  // Observações e anexo
+  notes           String?            @db.Text
+  attachmentUrl   String?            @map("attachment_url") @db.VarChar(500)
+
+  // Auditoria
+  createdBy       String?            @map("created_by")
+  updatedBy       String?            @map("updated_by")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
 
   resident Resident @relation(fields: [residentId], references: [id], onDelete: Cascade)
   house    House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
@@ -450,6 +519,10 @@ model FinancialRecord {
   @@index([houseId])
   @@index([status])
   @@index([dueDate])
+  @@index([paidDate])
+  @@index([issueDate(sort: Desc)])
+  @@index([type])
+  @@index([houseId, referenceMonth(sort: Desc)])
   @@map("financial_records")
 }
 

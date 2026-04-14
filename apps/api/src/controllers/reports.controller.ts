@@ -110,9 +110,9 @@ export async function staff(req: Request, res: Response, next: NextFunction): Pr
     const { start, end } = parsePeriod(req.query['period'] as string | undefined);
 
     const schedules = await prisma.workSchedule.findMany({
-      where: { houseId: authReq.houseId, date: { gte: start, lt: end } },
+      where: { houseId: authReq.houseId, scheduleDate: { gte: start, lt: end } },
       include: { user: { select: { id: true, name: true, role: true } } },
-      orderBy: { date: 'asc' },
+      orderBy: { scheduleDate: 'asc' },
     });
 
     res.json({ data: { schedules } });
