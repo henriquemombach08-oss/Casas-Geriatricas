@@ -134,10 +134,10 @@ export default function MedicationForm({
             {...register('dosage')}
           />
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Unidade</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Unidade</label>
             <select
               {...register('measurementUnit')}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="input text-gray-900 dark:text-white bg-white dark:bg-gray-700"
             >
               <option value="">Selecione...</option>
               <option value="mg">mg</option>

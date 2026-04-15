@@ -10,6 +10,7 @@ interface StaffMember {
   name: string;
   email: string;
   role: string;
+  customRole?: string;
   phone?: string;
   active: boolean;
 }
@@ -18,19 +19,30 @@ interface ApiResponse<T> { success: boolean; data: T; }
 
 const ROLE_LABELS: Record<string, string> = {
   admin: 'Administrador',
+  director: 'Diretor(a)',
   nurse: 'Enfermeiro(a)',
   caregiver: 'Cuidador(a)',
-  receptionist: 'Recepcionista',
+  admin_finance: 'Financeiro',
+  cook: 'Cozinheiro(a)',
+  other: 'Outro',
 };
 
 const ROLE_COLORS: Record<string, string> = {
   admin: 'bg-purple-100 text-purple-700',
+  director: 'bg-indigo-100 text-indigo-700',
   nurse: 'bg-blue-100 text-blue-700',
   caregiver: 'bg-green-100 text-green-700',
-  receptionist: 'bg-yellow-100 text-yellow-700',
+  admin_finance: 'bg-orange-100 text-orange-700',
+  cook: 'bg-yellow-100 text-yellow-700',
+  other: 'bg-gray-100 text-gray-700',
 };
 
-const emptyForm = { name: '', email: '', password: '', role: 'caregiver', phone: '' };
+function getRoleDisplay(member: StaffMember): string {
+  if (member.role === 'other' && member.customRole) return member.customRole;
+  return ROLE_LABELS[member.role] ?? member.role;
+}
+
+const emptyForm = { name: '', email: '', password: '', role: 'caregiver', customRole: '', phone: '' };
 
 export default function StaffPage() {
   const qc = useQueryClient();
@@ -39,6 +51,7 @@ export default function StaffPage() {
   const [resetId, setResetId] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [form, setForm] = useState(emptyForm);
+  const [editForm, setEditForm] = useState<{ role: string; customRole: string } | null>(null);
 
   const { data: staff = [], isLoading } = useQuery({
     queryKey: ['staff'],
@@ -49,7 +62,10 @@ export default function StaffPage() {
   });
 
   const create = useMutation({
-    mutationFn: () => api.post('/users', form),
+    mutationFn: () => api.post('/users', {
+      ...form,
+      customRole: form.role === 'other' ? form.customRole : undefined,
+    }),
     onSuccess: () => {
       toast.success('Funcionário criado com sucesso');
       setShowForm(false);
@@ -118,12 +134,19 @@ export default function StaffPage() {
             <div>
               <label className="label">Cargo *</label>
               <select className="input" value={form.role}
-                onChange={e => setForm(f => ({ ...f, role: e.target.value }))}>
+                onChange={e => setForm(f => ({ ...f, role: e.target.value, customRole: '' }))}>
                 {Object.entries(ROLE_LABELS).map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>
                 ))}
               </select>
             </div>
+            {form.role === 'other' && (
+              <div>
+                <label className="label">Cargo personalizado *</label>
+                <input className="input" placeholder="Ex: Fisioterapeuta" value={form.customRole}
+                  onChange={e => setForm(f => ({ ...f, customRole: e.target.value }))} />
+              </div>
+            )}
             <div>
               <label className="label">Telefone</label>
               <input className="input" value={form.phone}
@@ -132,7 +155,7 @@ export default function StaffPage() {
           </div>
           <div className="flex gap-2">
             <button onClick={() => create.mutate()}
-              disabled={!form.name || !form.email || !form.password || create.isPending}
+              disabled={!form.name || !form.email || !form.password || (form.role === 'other' && !form.customRole) || create.isPending}
               className="btn-primary text-sm">
               {create.isPending ? 'Salvando...' : 'Criar Funcionário'}
             </button>
@@ -188,7 +211,7 @@ export default function StaffPage() {
                   <td className="px-4 py-3 text-gray-500">{s.email}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[s.role] ?? 'bg-gray-100 text-gray-700'}`}>
-                      {ROLE_LABELS[s.role] ?? s.role}
+                      {getRoleDisplay(s)}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-500">{s.phone || '—'}</td>

@@ -18,6 +18,7 @@ export async function listUsers(req: Request, res: Response, next: NextFunction)
         id: true,
         name: true,
         role: true,
+        customRole: true,
         phone: true,
         email: true,
         active: true,
@@ -34,16 +35,16 @@ export async function listUsers(req: Request, res: Response, next: NextFunction)
 export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const authReq = req as AuthRequest;
-    const { name, email, password, role, phone } = req.body as {
+    const { name, email, password, role, customRole, phone } = req.body as {
       name: string; email: string; password: string;
-      role: string; phone?: string;
+      role: string; customRole?: string; phone?: string;
     };
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) { res.status(409).json({ success: false, message: 'Email já cadastrado' }); return; }
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await prisma.user.create({
-      data: { houseId: authReq.houseId, name, email, passwordHash, role: role as never, phone },
-      select: { id: true, name: true, email: true, role: true, phone: true, active: true },
+      data: { houseId: authReq.houseId, name, email, passwordHash, role: role as never, customRole: customRole || null, phone },
+      select: { id: true, name: true, email: true, role: true, customRole: true, phone: true, active: true },
     });
     res.status(201).json({ success: true, data: user });
   } catch (err) { next(err); }
@@ -53,15 +54,21 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
   try {
     const authReq = req as AuthRequest;
     const { id } = req.params as { id: string };
-    const { name, role, phone, active } = req.body as {
-      name?: string; role?: string; phone?: string; active?: boolean;
+    const { name, role, customRole, phone, active } = req.body as {
+      name?: string; role?: string; customRole?: string; phone?: string; active?: boolean;
     };
     const user = await prisma.user.findFirst({ where: { id, houseId: authReq.houseId } });
     if (!user) { res.status(404).json({ success: false, message: 'Usuário não encontrado' }); return; }
     const updated = await prisma.user.update({
       where: { id },
-      data: { ...(name && { name }), ...(role && { role: role as never }), ...(phone !== undefined && { phone }), ...(active !== undefined && { active }) },
-      select: { id: true, name: true, email: true, role: true, phone: true, active: true },
+      data: {
+        ...(name && { name }),
+        ...(role && { role: role as never }),
+        ...(role === 'other' ? { customRole: customRole || null } : role ? { customRole: null } : {}),
+        ...(phone !== undefined && { phone }),
+        ...(active !== undefined && { active }),
+      },
+      select: { id: true, name: true, email: true, role: true, customRole: true, phone: true, active: true },
     });
     res.json({ success: true, data: updated });
   } catch (err) { next(err); }
