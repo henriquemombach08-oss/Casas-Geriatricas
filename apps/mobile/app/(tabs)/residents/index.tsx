@@ -26,20 +26,20 @@ interface Resident {
 }
 
 interface ResidentsResponse {
-  data: Resident[];
-  pagination?: { total: number; page: number; limit: number };
+  success: boolean;
+  data: {
+    residents: Resident[];
+    pagination: { total: number; page: number; limit: number; pages: number };
+  };
 }
 
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
+function getInitials(name?: string): string {
+  if (!name) return '?';
+  return name.split(' ').slice(0, 2).map((n) => n[0]).join('').toUpperCase();
 }
 
-function calcAge(birthDate: string): number {
+function calcAge(birthDate?: string): number {
+  if (!birthDate) return 0;
   const birth = new Date(birthDate);
   const today = new Date();
   let age = today.getFullYear() - birth.getFullYear();
@@ -109,18 +109,17 @@ export default function ResidentsScreen() {
           search: debouncedSearch || undefined,
         },
       });
-      return data;
+      return data.data;
     },
     initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => {
-      if (!lastPage.pagination) return undefined;
-      const { total, page, limit } = lastPage.pagination;
-      if (page * limit < total) return page + 1;
+    getNextPageParam: (lastPage) => {
+      const { page, pages } = lastPage.pagination;
+      if (page < pages) return page + 1;
       return undefined;
     },
   });
 
-  const residents = data?.pages.flatMap((p) => p.data) ?? [];
+  const residents = data?.pages.flatMap((p) => p.residents) ?? [];
 
   function renderItem({ item }: { item: Resident }) {
     const initials = getInitials(item.name);
