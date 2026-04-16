@@ -28,6 +28,9 @@
     "pnpm": ">=9.0.0"
   },
   "pnpm": {
+    "overrides": {
+      "@expo/metro-runtime": "6.1.2"
+    },
     "onlyBuiltDependencies": [
       "@prisma/client",
       "@prisma/engines",
