@@ -15,6 +15,6 @@ RUN cd apps/api && npx prisma generate --schema=./prisma/schema.prisma
 RUN cd apps/api && pnpm build
 
 ENV NODE_ENV=production
-WORKDIR /app/apps/api
+WORKDIR /app
 EXPOSE 3001
-CMD ["node", "dist/index.js"]
+CMD ["node", "apps/api/dist/index.js"]
