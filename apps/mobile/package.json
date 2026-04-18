@@ -21,6 +21,7 @@
     "axios": "^1.7.2",
     "expo": "~54.0.0",
     "expo-camera": "~17.0.10",
+    "expo-device": "^55.0.15",
     "expo-image-picker": "~17.0.10",
     "expo-local-authentication": "~17.0.8",
     "expo-notifications": "~0.32.16",
