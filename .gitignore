@@ -1,4 +1,6 @@
 .claude/
+FASE_*.md
+UPGRADES_*.md
 node_modules/
 dist/
 .next/
