@@ -61,6 +61,17 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', env: env.NODE_ENV, timestamp: new Date().toISOString() });
 });
 
+app.get('/health/db', async (_req, res) => {
+  try {
+    const { prisma } = await import('./lib/prisma.js');
+    await prisma.$queryRaw`SELECT 1`;
+    const userCount = await prisma.user.count();
+    res.json({ db: 'ok', userCount });
+  } catch (err) {
+    res.status(500).json({ db: 'error', message: String(err) });
+  }
+});
+
 // ─── API Docs ─────────────────────────────────────────────────────────────────
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
