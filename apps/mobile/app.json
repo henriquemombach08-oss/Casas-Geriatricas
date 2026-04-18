@@ -9,28 +9,28 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#2563EB",
-          "defaultChannel": "default"
-        }
-      ]
+      "expo-notifications"
     ],
     "android": {
-      "adaptiveIcon": { "backgroundColor": "#2563EB" },
-      "package": "com.casageri.app",
-      "googleServicesFile": "./google-services.json"
+      "adaptiveIcon": {
+        "backgroundColor": "#2563EB"
+      },
+      "package": "com.casageri.app"
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.casageri.app",
       "buildNumber": "1"
     },
-    "experiments": { "typedRoutes": true },
+    "experiments": {
+      "typedRoutes": true
+    },
     "extra": {
-      "eas": { "projectId": "casageri-prod" }
-    }
+      "router": {},
+      "eas": {
+        "projectId": "44c2891c-2e2e-4822-afda-6b1b87324e62"
+      }
+    },
+    "owner": "henriquesilva008"
   }
 }
