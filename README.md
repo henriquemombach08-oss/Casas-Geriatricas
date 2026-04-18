@@ -1,127 +1,206 @@
 # CasaGeri — Sistema de Gestão para Casas Geriátricas
 
-Sistema completo de gerenciamento para casas geriátricas, desenvolvido em TypeScript com Next.js, Node.js e PostgreSQL (Supabase).
+Software completo de gestão para casas geriátricas, integrando dashboard web, aplicativo mobile e API REST para controle de residentes, medicamentos, visitantes, escalas de trabalho e financeiro.
+
+![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=next.js&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-Expo_54-61DAFB?style=flat-square&logo=react&logoColor=black)
+![Prisma](https://img.shields.io/badge/Prisma-5.13-2D3748?style=flat-square&logo=prisma&logoColor=white)
+
+---
+
+## Sobre o Projeto
+
+O CasaGeri é um sistema de gestão desenvolvido para casas geriátricas, oferecendo controle centralizado de residentes, equipe, medicamentos, visitantes, escalas e finanças. A plataforma é composta por uma API robusta, um dashboard web para gestores e equipe, e um aplicativo mobile para uso em campo.
+
+---
 
 ## Funcionalidades
 
-- **Residentes** — cadastro completo, histórico médico, foto, documentos (CNH/RG/Convênio)
-- **Medicamentos** — prescrições, schedule board, rastreamento de administração, adesão em tempo real
-- **Escala de Trabalho** — calendário mensal, check-in/check-out, confirmação de escala, detecção de ausências
-- **Financeiro** — cobranças, pagamentos, NF-e, fluxo de caixa, inadimplência
-- **Relatórios** — dashboards de BI, exportação PDF (pdfkit) e Excel (xlsx)
-- **Notificações** — alertas de medicamentos atrasados, lembretes de escala
+- **Gestão de residentes** — cadastro completo com dados médicos, documentos, status e histórico
+- **Controle de medicamentos** — prescrições, posologia, schedules de administração e log de doses
+- **Controle de visitantes** — registro de entrada e saída com identificação e vínculo com residentes
+- **Escalas de trabalho** — agendamento e gerenciamento de turnos da equipe
+- **Gestão de funcionários** — cadastro, roles, perfis e controle de acesso
+- **Módulo financeiro** — cobranças, pagamentos e controle de inadimplência
+- **Relatórios e exportações** — relatórios de medicamentos, residentes, financeiro e equipe com exportação em PDF e Excel
+- **Controle de acesso por papéis (RBAC)** — 7 roles com permissões diferenciadas
+- **Autenticação JWT** — access token + refresh token com rotação segura
 
-## Tech Stack
+---
+
+## Arquitetura
+
+```
+casas-geriatricas/
+├── apps/
+│   ├── api/          # Express + TypeScript + Prisma (REST API)
+│   ├── web/          # Next.js 14 (dashboard web)
+│   └── mobile/       # Expo SDK 54 (React Native — iOS/Android)
+└── package.json      # pnpm workspaces
+```
+
+### Stack Tecnológica
 
 | Camada | Tecnologia |
-|--------|-----------|
-| Frontend | Next.js 14 (App Router), React 18, Tailwind CSS, Recharts |
-| Backend | Node.js, Express, TypeScript, Prisma ORM |
-| Banco de dados | PostgreSQL via Supabase (pooler PgBouncer) |
-| Jobs | Bull.js + Redis, node-cron |
-| Deploy | Vercel (web) + Vercel Functions (API) + Supabase (DB) |
+|--------|------------|
+| API | Node.js 20, Express, TypeScript, Prisma ORM |
+| Banco de dados | PostgreSQL 15 |
+| Web | Next.js 14, React 18, Tailwind CSS, React Query |
+| Mobile | Expo SDK 54, React Native 0.81, Expo Router |
+| Auth | JWT (access + refresh tokens), bcryptjs |
+| Filas | Bull + Redis (jobs agendados, notificações) |
+| PDF/Excel | PDFKit, xlsx |
+| Logs | Pino, Morgan |
+| Validação | Zod, Joi |
 
-## Estrutura do Monorepo
+---
 
-```
-apps/
-  web/          # Next.js 14 — painel administrativo
-  api/          # Express API
-  mobile/       # React Native / Expo (em desenvolvimento)
-packages/
-  shared-types/ # Tipos TypeScript compartilhados
-```
+## Pré-requisitos
 
-## Primeiros Passos
+- **Node.js** 20+
+- **pnpm** 9+
+- **PostgreSQL** 15+
+- **Redis** 7+
 
-### Requisitos
+---
 
-- Node.js 18+
-- pnpm 8+
-- Conta Supabase (PostgreSQL)
-- Redis (para jobs em dev local)
-
-### Instalação
+## Instalação e Configuração
 
 ```bash
-git clone https://github.com/henriquemombach08-oss/Casas-Geriatricas.git
-cd Casas-Geriatricas
+# Clonar o repositório
+git clone <url>
+cd casas-geriatricas
+
+# Instalar todas as dependências (todos os apps via workspaces)
 pnpm install
+
+# Configurar variáveis de ambiente da API
+cp apps/api/.env.example apps/api/.env
+# Editar apps/api/.env com suas credenciais
 ```
 
-### Variáveis de Ambiente
+---
+
+## Variáveis de Ambiente (API)
+
+Crie o arquivo `apps/api/.env` com as seguintes variáveis:
+
+| Variável | Descrição | Exemplo |
+|----------|-----------|---------|
+| `DATABASE_URL` | Connection string do PostgreSQL | `postgresql://user:pass@localhost:5432/casageri` |
+| `JWT_SECRET` | Chave secreta para assinar access tokens | string aleatória segura |
+| `JWT_REFRESH_SECRET` | Chave secreta para assinar refresh tokens | string aleatória segura (diferente) |
+| `JWT_EXPIRES_IN` | Expiração do access token | `15m` |
+| `JWT_REFRESH_EXPIRES_IN` | Expiração do refresh token | `7d` |
+| `REDIS_URL` | URL de conexão com o Redis | `redis://localhost:6379` |
+| `PORT` | Porta em que a API irá escutar | `3001` |
+| `NODE_ENV` | Ambiente de execução | `development` / `production` |
+
+---
+
+## Banco de Dados
 
 ```bash
-# apps/api/.env
-DATABASE_URL=postgresql://postgres.[project-id]:[password]@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
-JWT_SECRET=<segredo-aleatorio-256-bits>
-FRONTEND_URL=http://localhost:3000
-PORT=3001
-NODE_ENV=development
-
-# apps/web/.env.local
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
-```
-
-### Banco de Dados
-
-```bash
+# Rodar as migrations (cria/atualiza o schema no banco)
 cd apps/api
-pnpm db:generate   # gera o Prisma client
-pnpm db:push       # sincroniza schema com Supabase
-pnpm db:seed       # popula dados de exemplo (opcional)
+pnpm prisma migrate dev
+
+# Seed inicial com dados de exemplo (opcional)
+pnpm prisma db seed
+
+# Abrir o Prisma Studio (interface visual do banco)
+pnpm prisma studio
 ```
 
-### Executar em Desenvolvimento
+Ou, a partir da raiz do monorepo:
 
 ```bash
-# raiz do monorepo
+pnpm db:migrate
+pnpm db:studio
+```
+
+---
+
+## Executando em Desenvolvimento
+
+Cada app pode ser iniciado individualmente ou em paralelo:
+
+```bash
+# Iniciar todos os apps em paralelo (a partir da raiz)
 pnpm dev
-# Web: http://localhost:3000
-# API: http://localhost:3001
+
+# API — porta 3001
+cd apps/api && pnpm dev
+
+# Web — porta 3000
+cd apps/web && pnpm dev
+
+# Mobile — Expo DevTools
+cd apps/mobile && pnpm dev
 ```
 
-### Testes
+---
 
-```bash
-cd apps/api
-pnpm test          # 71 testes unitários (Jest + ts-jest)
+## API Endpoints
+
+A documentação interativa completa está disponível via Swagger UI em:
+
+```
+http://localhost:3001/api-docs
 ```
 
-## Deploy
+Visão geral dos módulos disponíveis:
 
-### Web (Vercel)
+| Módulo | Base Path | Descrição |
+|--------|-----------|-----------|
+| Auth | `/api/auth` | Login, registro, refresh token, logout |
+| Residentes | `/api/residents` | CRUD de residentes e documentos |
+| Medicamentos | `/api/medications` | Prescrições, schedules e logs de administração |
+| Visitantes | `/api/visitors` | Controle de entrada e saída |
+| Funcionários | `/api/users` | Gestão de equipe e perfis |
+| Escalas | `/api/schedules` | Escalas de trabalho e turnos |
+| Financeiro | `/api/financial` | Cobranças e pagamentos |
+| Relatórios | `/api/reports` | Dashboards e exportação PDF/Excel |
 
-1. Conectar repositório no Vercel
-2. Root Directory: `apps/web`
-3. Variável de ambiente: `NEXT_PUBLIC_API_URL=https://[seu-api].vercel.app/api`
+---
 
-### API (Vercel Functions)
+## Papéis de Acesso (RBAC)
 
-1. Conectar repositório no Vercel (projeto separado)
-2. Root Directory: `apps/api`
-3. Configurar variáveis: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`
+O sistema implementa controle de acesso baseado em papéis. Cada usuário possui exatamente um role:
 
-## Documentação
+| Role | Descrição |
+|------|-----------|
+| `admin` | Acesso total ao sistema |
+| `director` | Gestão geral da casa geriátrica |
+| `nurse` | Controle de medicamentos e saúde dos residentes |
+| `caregiver` | Acompanhamento diário dos residentes |
+| `admin_finance` | Acesso ao módulo financeiro |
+| `cook` | Acesso limitado (escalas e informações básicas) |
+| `other` | Perfil customizável para demais funções |
 
-| Documento | Descrição |
-|-----------|-----------|
-| [Manual do Administrador](docs/ADMIN.md) | Como usar o sistema como administrador |
-| [Manual do Usuário](docs/USER.md) | Guia para cuidadores e enfermeiros |
-| [Troubleshooting](docs/TROUBLESHOOTING.md) | Resolução de problemas comuns |
-| [Disaster Recovery](docs/DISASTER_RECOVERY.md) | Plano de recuperação de desastres |
+---
 
-## Segurança
+## Scripts Disponíveis
 
-- JWT com refresh token rotation
-- bcrypt (12 rounds) para senhas
-- Helmet.js — security headers HTTP
-- Rate limiting: 200 req/15min global; 10 tentativas/15min no login
-- CORS restrito ao domínio do frontend
-- Prisma ORM — imune a SQL injection
-- CSP, X-Frame-Options, X-Content-Type-Options no Next.js
-- Dados de saúde tratados conforme LGPD
+Na raiz do monorepo:
 
-## Suporte
+| Comando | Descrição |
+|---------|-----------|
+| `pnpm dev` | Inicia todos os apps em paralelo |
+| `pnpm dev:api` | Inicia somente a API |
+| `pnpm dev:web` | Inicia somente o dashboard web |
+| `pnpm build` | Build de produção de todos os apps |
+| `pnpm lint` | Lint em todos os apps |
+| `pnpm typecheck` | Type check em todos os apps |
+| `pnpm test` | Roda os testes (Jest) |
+| `pnpm db:migrate` | Executa migrations do Prisma |
+| `pnpm db:studio` | Abre o Prisma Studio |
+| `pnpm format` | Formata o código com Prettier |
 
-Para dúvidas ou problemas, abra uma issue no repositório.
+---
+
+## Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).

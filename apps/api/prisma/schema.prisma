@@ -108,6 +108,23 @@ enum ScheduleStatus {
   excused_absence
 }
 
+enum CarePlanStatus {
+  active
+  completed
+  archived
+}
+
+enum CarePlanTaskCategory {
+  medication
+  monitoring
+  therapy
+  nutrition
+  mobility
+  hygiene
+  social
+  other
+}
+
 enum FinancialType {
   charge
   payment
@@ -159,14 +176,17 @@ model House {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  users                User[]
-  residents            Resident[]
-  documents            Document[]
-  workSchedules        WorkSchedule[]
-  financialRecords     FinancialRecord[]
-  auditLogs            AuditLog[]
-  notifications        Notification[]
-  pharmacyIntegrations PharmacyIntegration[]
+  users                 User[]
+  residents             Resident[]
+  documents             Document[]
+  workSchedules         WorkSchedule[]
+  financialRecords      FinancialRecord[]
+  auditLogs             AuditLog[]
+  notifications         Notification[]
+  pharmacyIntegrations  PharmacyIntegration[]
+  aiScheduleSuggestions AIScheduleSuggestion[]
+  carePlans             CarePlan[]
+  residentRiskScores    ResidentRiskScore[]
 
   @@map("houses")
 }
@@ -266,12 +286,14 @@ model Resident {
   createdAt                     DateTime       @default(now()) @map("created_at")
   updatedAt                     DateTime       @updatedAt @map("updated_at")
 
-  house            House             @relation(fields: [houseId], references: [id], onDelete: Cascade)
-  documents        Document[]
-  medications      Medication[]
-  medicationLogs   MedicationLog[]
-  visitors         Visitor[]
-  financialRecords FinancialRecord[]
+  house              House               @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  documents          Document[]
+  medications        Medication[]
+  medicationLogs     MedicationLog[]
+  visitors           Visitor[]
+  financialRecords   FinancialRecord[]
+  carePlans          CarePlan[]
+  riskScores         ResidentRiskScore[]
 
   @@index([houseId])
   @@map("residents")
@@ -527,6 +549,87 @@ model FinancialRecord {
   @@index([type])
   @@index([houseId, referenceMonth(sort: Desc)])
   @@map("financial_records")
+}
+
+model AIScheduleSuggestion {
+  id          String   @id @default(uuid())
+  houseId     String   @map("house_id")
+  month       String   @db.VarChar(7)       // YYYY-MM
+  suggestions Json                          // Array of schedule suggestions with confidence scores
+  conflicts   Json     @default("[]")       // Detected conflicts in existing schedule
+  absenceRisk Json     @map("absence_risk") @default("[]") // Per-staff absence predictions
+  generatedBy String?  @map("generated_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([houseId, month])
+  @@map("ai_schedule_suggestions")
+}
+
+model CarePlan {
+  id         String         @id @default(uuid())
+  residentId String         @map("resident_id")
+  houseId    String         @map("house_id")
+  title      String
+  diagnoses  String[]
+  status     CarePlanStatus @default(active)
+  startDate  DateTime       @map("start_date") @db.Date
+  reviewDate DateTime?      @map("review_date") @db.Date
+  notes      String?        @db.Text
+  createdBy  String?        @map("created_by")
+  updatedBy  String?        @map("updated_by")
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  resident Resident       @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  house    House          @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  tasks    CarePlanTask[]
+
+  @@index([residentId])
+  @@index([houseId])
+  @@map("care_plans")
+}
+
+model CarePlanTask {
+  id          String               @id @default(uuid())
+  carePlanId  String               @map("care_plan_id")
+  title       String
+  description String?              @db.Text
+  category    CarePlanTaskCategory @default(other)
+  frequency   String?              @db.VarChar(100)
+  completed   Boolean              @default(false)
+  completedAt DateTime?            @map("completed_at")
+  completedBy String?              @map("completed_by")
+  dueDate     DateTime?            @map("due_date") @db.Date
+  notes       String?              @db.Text
+  createdAt   DateTime             @default(now()) @map("created_at")
+  updatedAt   DateTime             @updatedAt @map("updated_at")
+
+  carePlan CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  @@index([carePlanId])
+  @@map("care_plan_tasks")
+}
+
+model ResidentRiskScore {
+  id               String   @id @default(uuid())
+  residentId       String   @map("resident_id")
+  houseId          String   @map("house_id")
+  fallRisk         Int      @map("fall_risk")         // 0-100
+  infectionRisk    Int      @map("infection_risk")    // 0-100
+  malnutritionRisk Int      @map("malnutrition_risk") // 0-100
+  overallRisk      Int      @map("overall_risk")      // 0-100
+  riskFactors      Json     @map("risk_factors")      @default("[]")
+  recommendations  Json     @default("[]")
+  calculatedAt     DateTime @default(now()) @map("calculated_at")
+
+  resident Resident @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  house    House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([residentId])
+  @@index([houseId])
+  @@map("resident_risk_scores")
 }
 
 model AuditLog {

@@ -18,6 +18,10 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
+  { icon: '📊', label: 'Relatórios', route: '/more/reports', color: colors.purple },
+  { icon: '🤖', label: 'IA • Escalas', route: '/more/ai-schedule', color: colors.purple },
+  { icon: '📋', label: 'Planos de Cuidados', route: '/more/care-plans', color: colors.secondary },
+  { icon: '⚠️', label: 'Avaliação de Risco', route: '/more/risk-scores', color: colors.danger },
   { icon: '💰', label: 'Financeiro', route: '/more/financial', color: colors.secondary },
   { icon: '📅', label: 'Escala', route: '/more/schedules', color: colors.primary },
   { icon: '🧑‍💼', label: 'Funcionários', route: '/more/staff', color: colors.warning },

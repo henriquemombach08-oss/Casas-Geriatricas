@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -25,15 +25,15 @@ import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
 
 interface Visitor {
   id: string;
-  visitorName: string;
-  visitorPhone?: string;
-  relationship?: string;
-  status: string;
-  checkInTime: string;
-  checkOutTime?: string;
-  residentName?: string;
-  residentId?: string;
-  notes?: string;
+  name: string;
+  phone?: string | null;
+  relationship?: string | null;
+  visitDate: string;
+  visitTimeIn?: string | null;
+  visitTimeOut?: string | null;
+  residentId: string;
+  resident?: { id: string; name: string };
+  notes?: string | null;
 }
 
 interface VisitorsResponse {
@@ -45,34 +45,27 @@ interface Resident {
   name: string;
 }
 
-interface ResidentsResponse {
-  data: Resident[];
+interface ResidentsApiResponse {
+  success: boolean;
+  data: {
+    residents: Resident[];
+    pagination: { total: number; page: number; limit: number; pages: number };
+  };
+}
+
+function deriveStatus(v: Visitor): 'inside' | 'checked_out' {
+  return v.visitTimeOut ? 'checked_out' : 'inside';
 }
 
 type TabType = 'today' | 'inside';
 
-function formatDateTime(dt: string): string {
-  return new Date(dt).toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+
+function statusColor(status: 'inside' | 'checked_out'): 'green' | 'gray' {
+  return status === 'inside' ? 'green' : 'gray';
 }
 
-function statusColor(status: string): 'green' | 'yellow' | 'gray' {
-  switch (status) {
-    case 'inside': return 'green';
-    case 'checked_out': return 'gray';
-    default: return 'yellow';
-  }
-}
-
-function statusLabel(status: string): string {
-  switch (status) {
-    case 'inside': return 'Dentro';
-    case 'checked_out': return 'Saiu';
-    case 'scheduled': return 'Agendado';
-    default: return status;
-  }
+function statusLabel(status: 'inside' | 'checked_out'): string {
+  return status === 'inside' ? 'Dentro' : 'Saiu';
 }
 
 export default function VisitorsScreen() {
@@ -88,51 +81,35 @@ export default function VisitorsScreen() {
   const [noSchedule, setNoSchedule] = useState(true);
   const [showResidentPicker, setShowResidentPicker] = useState(false);
 
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const todayQuery = useQuery({
     queryKey: ['visitors-today'],
     queryFn: async () => {
       const { data } = await api.get<VisitorsResponse>('/visitors', {
-        params: {
-          startDate: todayStart.toISOString(),
-          endDate: todayEnd.toISOString(),
-        },
+        params: { date: todayStr },
       });
       return data.data;
     },
-    enabled: activeTab === 'today',
-    refetchInterval: 30000,
-  });
-
-  const insideQuery = useQuery({
-    queryKey: ['visitors-inside'],
-    queryFn: async () => {
-      const { data } = await api.get<VisitorsResponse>('/visitors', {
-        params: { status: 'inside' },
-      });
-      return data.data;
-    },
-    enabled: activeTab === 'inside',
     refetchInterval: 30000,
   });
 
   const residentsQuery = useQuery({
     queryKey: ['residents-active'],
     queryFn: async () => {
-      const { data } = await api.get<ResidentsResponse>('/residents', {
+      const { data } = await api.get<ResidentsApiResponse>('/residents', {
         params: { status: 'active', limit: 100 },
       });
-      return data.data;
+      return data.data.residents;
     },
   });
 
   const checkoutMutation = useMutation({
     mutationFn: async (id: string) => {
-      await api.post(`/visitors/${id}/checkout`);
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      await api.post(`/visitors/${id}/checkout`, { visitTimeOut: `${hh}:${mm}` });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['visitors-today'] });
@@ -147,13 +124,17 @@ export default function VisitorsScreen() {
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
       await api.post('/visitors', {
-        visitorName: newName.trim(),
-        visitorPhone: newPhone.trim() || undefined,
+        name: newName.trim(),
+        phone: newPhone.trim() || undefined,
         relationship: newRelationship.trim() || undefined,
-        residentId: selectedResidentId || undefined,
+        residentId: selectedResidentId,
         notes: newNotes.trim() || undefined,
-        scheduledTime: noSchedule ? undefined : new Date().toISOString(),
+        visitDate: now.toISOString().split('T')[0],
+        visitTimeIn: noSchedule ? undefined : `${hh}:${mm}`,
       });
     },
     onSuccess: () => {
@@ -186,37 +167,40 @@ export default function VisitorsScreen() {
     createMutation.mutate();
   }
 
+  const allToday = todayQuery.data ?? [];
   const currentData =
-    activeTab === 'today' ? (todayQuery.data ?? []) : (insideQuery.data ?? []);
-  const isLoading = activeTab === 'today' ? todayQuery.isLoading : insideQuery.isLoading;
-  const isRefetching =
-    activeTab === 'today' ? todayQuery.isRefetching : insideQuery.isRefetching;
-  const refetch = activeTab === 'today' ? todayQuery.refetch : insideQuery.refetch;
+    activeTab === 'inside'
+      ? allToday.filter((v) => !v.visitTimeOut)
+      : allToday;
+  const isLoading = todayQuery.isLoading;
+  const isRefetching = todayQuery.isRefetching;
+  const refetch = todayQuery.refetch;
 
   const selectedResident = residentsQuery.data?.find((r) => r.id === selectedResidentId);
 
   function renderItem({ item }: { item: Visitor }) {
+    const status = deriveStatus(item);
     return (
       <Card style={styles.item}>
         <View style={styles.itemHeader}>
           <View style={styles.itemInfo}>
-            <Text style={styles.visitorName}>{item.visitorName}</Text>
-            {item.residentName ? (
-              <Text style={styles.residentName}>👴 {item.residentName}</Text>
+            <Text style={styles.visitorName}>{item.name}</Text>
+            {item.resident?.name ? (
+              <Text style={styles.residentName}>👴 {item.resident.name}</Text>
             ) : null}
           </View>
-          <Badge label={statusLabel(item.status)} color={statusColor(item.status)} />
+          <Badge label={statusLabel(status)} color={statusColor(status)} />
         </View>
         <View style={styles.itemFooter}>
           <Text style={styles.detail}>
             {item.relationship ? `${item.relationship} • ` : ''}
-            Entrada: {formatDateTime(item.checkInTime)}
+            {item.visitTimeIn ? `Entrada: ${item.visitTimeIn}` : 'Sem horário'}
           </Text>
-          {item.status === 'inside' && (
+          {status === 'inside' && (
             <TouchableOpacity
               style={styles.checkoutBtn}
               onPress={() =>
-                Alert.alert('Check-out', `Confirmar saída de ${item.visitorName}?`, [
+                Alert.alert('Check-out', `Confirmar saída de ${item.name}?`, [
                   { text: 'Cancelar', style: 'cancel' },
                   { text: 'Confirmar', onPress: () => checkoutMutation.mutate(item.id) },
                 ])

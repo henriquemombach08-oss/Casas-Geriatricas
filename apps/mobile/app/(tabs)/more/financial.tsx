@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -23,17 +23,27 @@ import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
 
 interface FinancialRecord {
   id: string;
-  residentName?: string;
-  residentId?: string;
+  residentId: string;
   description: string;
-  amount: number;
-  dueDate?: string;
+  amount: number | string;
+  dueDate?: string | null;
   status: string;
-  category?: string;
+  category?: string | null;
+  type: 'charge' | 'payment';
 }
 
-interface FinancialResponse {
-  data: FinancialRecord[];
+interface FinancialApiResponse {
+  success: boolean;
+  data: {
+    resident: { id: string; name: string };
+    records: FinancialRecord[];
+    summary: {
+      total_charges: number;
+      total_paid: number;
+      total_pending: number;
+      total_overdue: number;
+    };
+  };
 }
 
 interface Resident {
@@ -41,8 +51,12 @@ interface Resident {
   name: string;
 }
 
-interface ResidentsResponse {
-  data: Resident[];
+interface ResidentsApiResponse {
+  success: boolean;
+  data: {
+    residents: Resident[];
+    pagination: { total: number; page: number; limit: number; pages: number };
+  };
 }
 
 type TabType = 'charges' | 'payments';
@@ -94,37 +108,39 @@ export default function FinancialScreen() {
   const [category, setCategory] = useState('monthly_fee');
   const [showResidentPicker, setShowResidentPicker] = useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
+  const [filterResidentId, setFilterResidentId] = useState('');
+  const [showFilterPicker, setShowFilterPicker] = useState(false);
 
   const financialQuery = useQuery({
-    queryKey: ['financial', activeTab],
+    queryKey: ['financial', filterResidentId],
     queryFn: async () => {
-      const { data } = await api.get<FinancialResponse>('/financial', {
-        params: {
-          type: activeTab === 'charges' ? 'charge' : 'payment',
-        },
-      });
+      if (!filterResidentId) return null;
+      const { data } = await api.get<FinancialApiResponse>(`/financial/resident/${filterResidentId}`);
       return data.data;
     },
+    enabled: !!filterResidentId,
   });
 
   const residentsQuery = useQuery({
     queryKey: ['residents-active'],
     queryFn: async () => {
-      const { data } = await api.get<ResidentsResponse>('/residents', {
+      const { data } = await api.get<ResidentsApiResponse>('/residents', {
         params: { status: 'active', limit: 100 },
       });
-      return data.data;
+      return data.data.residents;
     },
   });
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      await api.post('/financial/charges', {
-        residentId: selectedResidentId || undefined,
+      await api.post('/financial', {
+        resident_id: selectedResidentId,
+        type: activeTab === 'charges' ? 'charge' : 'payment',
         description: description.trim(),
         amount: parseFloat(amount.replace(',', '.')),
-        dueDate: dueDate || undefined,
         category,
+        issue_date: new Date().toISOString().split('T')[0],
+        due_date: dueDate || undefined,
       });
     },
     onSuccess: () => {
@@ -147,6 +163,10 @@ export default function FinancialScreen() {
   }
 
   function handleSubmit() {
+    if (!selectedResidentId) {
+      Alert.alert('Atenção', 'Selecione um residente.');
+      return;
+    }
     if (!description.trim()) {
       Alert.alert('Atenção', 'Informe a descrição.');
       return;
@@ -158,9 +178,13 @@ export default function FinancialScreen() {
     createMutation.mutate();
   }
 
-  const records = financialQuery.data ?? [];
+  const allRecords = financialQuery.data?.records ?? [];
+  const records = allRecords.filter((r) =>
+    activeTab === 'charges' ? r.type === 'charge' : r.type === 'payment'
+  );
   const residents = residentsQuery.data ?? [];
   const selectedResident = residents.find((r) => r.id === selectedResidentId);
+  const filterResident = residents.find((r) => r.id === filterResidentId);
   const selectedCategory = CATEGORIES.find((c) => c.value === category);
 
   function renderItem({ item }: { item: FinancialRecord }) {
@@ -169,14 +193,11 @@ export default function FinancialScreen() {
         <View style={styles.itemHeader}>
           <View style={styles.itemInfo}>
             <Text style={styles.description}>{item.description}</Text>
-            {item.residentName ? (
-              <Text style={styles.residentName}>👴 {item.residentName}</Text>
-            ) : null}
           </View>
           <Badge label={statusLabel(item.status)} color={statusColor(item.status)} />
         </View>
         <View style={styles.itemFooter}>
-          <Text style={styles.amount}>{formatCurrency(item.amount)}</Text>
+          <Text style={styles.amount}>{formatCurrency(Number(item.amount))}</Text>
           {item.dueDate ? (
             <Text style={styles.dueDate}>Vence: {formatDate(item.dueDate)}</Text>
           ) : null}
@@ -187,6 +208,39 @@ export default function FinancialScreen() {
 
   return (
     <>
+      {/* Resident filter */}
+      <View style={styles.filterRow}>
+        <TouchableOpacity
+          style={styles.filterPicker}
+          onPress={() => setShowFilterPicker((v) => !v)}
+        >
+          <Text style={filterResidentId ? styles.filterValue : styles.filterPlaceholder}>
+            {filterResident?.name ?? 'Selecionar residente...'}
+          </Text>
+          <Text>{showFilterPicker ? '▲' : '▼'}</Text>
+        </TouchableOpacity>
+        {filterResidentId ? (
+          <TouchableOpacity onPress={() => setFilterResidentId('')} style={styles.clearFilter}>
+            <Text style={styles.clearFilterText}>✕</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+      {showFilterPicker && (
+        <View style={styles.filterList}>
+          {residents.map((r) => (
+            <TouchableOpacity
+              key={r.id}
+              style={[styles.filterItem, filterResidentId === r.id && styles.filterItemSelected]}
+              onPress={() => { setFilterResidentId(r.id); setShowFilterPicker(false); }}
+            >
+              <Text style={[styles.filterItemText, filterResidentId === r.id && styles.filterItemTextSelected]}>
+                {r.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       <View style={styles.tabBar}>
         {([
           { key: 'charges', label: 'Cobranças' },
@@ -221,7 +275,11 @@ export default function FinancialScreen() {
           }
           ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
           ListEmptyComponent={
-            <EmptyState icon="💰" title="Sem registros" subtitle="Nenhum registro financeiro encontrado." />
+            <EmptyState
+              icon="💰"
+              title="Sem registros"
+              subtitle={filterResidentId ? 'Nenhum registro financeiro encontrado.' : 'Selecione um residente para ver os registros.'}
+            />
           }
         />
       )}
@@ -378,6 +436,60 @@ export default function FinancialScreen() {
 }
 
 const styles = StyleSheet.create({
+  filterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.card,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    gap: spacing.sm,
+  },
+  filterPicker: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.background,
+  },
+  filterValue: { fontSize: fontSize.sm, color: colors.text },
+  filterPlaceholder: { fontSize: fontSize.sm, color: colors.gray400 },
+  clearFilter: {
+    padding: spacing.sm,
+  },
+  clearFilterText: {
+    fontSize: fontSize.md,
+    color: colors.textSecondary,
+  },
+  filterList: {
+    backgroundColor: colors.card,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    maxHeight: 200,
+  },
+  filterItem: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  filterItemSelected: {
+    backgroundColor: colors.primaryLight,
+  },
+  filterItemText: {
+    fontSize: fontSize.sm,
+    color: colors.text,
+  },
+  filterItemTextSelected: {
+    color: colors.primary,
+    fontWeight: fontWeight.semibold,
+  },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: colors.card,

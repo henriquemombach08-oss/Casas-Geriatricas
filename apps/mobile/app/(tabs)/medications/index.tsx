@@ -25,16 +25,24 @@ import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
 
 interface ScheduledMedication {
   id: string;
-  medicationName: string;
-  dosage: string;
-  unit: string;
-  scheduledTime: string;
-  residentName: string;
-  status?: string;
+  medication_name: string;
+  dosage: string | null;
+  measurement_unit: string | null;
+  scheduled_time: string;
+  resident_name: string;
+  is_overdue: boolean;
+  already_administered: boolean;
+  minutes_until: number;
 }
 
-interface MedsResponse {
-  data: ScheduledMedication[];
+interface MedsApiResponse {
+  success: boolean;
+  data: {
+    date: string;
+    next_medications: ScheduledMedication[];
+    total: number;
+    urgent_count: number;
+  };
 }
 
 type FilterTab = 'all' | 'overdue' | 'upcoming';
@@ -48,15 +56,17 @@ const STATUS_OPTIONS = [
   { value: 'not_available', label: 'Não disponível' },
 ];
 
+/** scheduled_time is "HH:MM" — compute diff in ms vs now */
 function getTimeDiff(scheduledTime: string): number {
-  return new Date(scheduledTime).getTime() - Date.now();
+  const [hh, mm] = scheduledTime.split(':').map(Number);
+  const now = new Date();
+  const scheduled = new Date();
+  scheduled.setHours(hh ?? 0, mm ?? 0, 0, 0);
+  return scheduled.getTime() - now.getTime();
 }
 
 function formatTime(scheduledTime: string): string {
-  return new Date(scheduledTime).toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return scheduledTime; // already "HH:MM"
 }
 
 function getTimeBadge(diff: number): { label: string; color: 'red' | 'yellow' | 'green' } {
@@ -83,15 +93,15 @@ export default function MedicationsScreen() {
   const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['medications-scheduled'],
     queryFn: async () => {
-      const { data } = await api.get<MedsResponse>('/medications/scheduled/next');
-      return data.data;
+      const { data } = await api.get<MedsApiResponse>('/medications/scheduled/next');
+      return data.data.next_medications;
     },
     refetchInterval: 30000,
   });
 
   useEffect(() => {
     const meds = data ?? [];
-    const hasOverdue = meds.some((m) => getTimeDiff(m.scheduledTime) < 0);
+    const hasOverdue = meds.some((m) => m.is_overdue);
     if (hasOverdue) {
       Vibration.vibrate([0, 300, 200, 300]);
     }
@@ -126,9 +136,8 @@ export default function MedicationsScreen() {
   const meds = data ?? [];
 
   const filteredMeds = meds.filter((m) => {
-    const diff = getTimeDiff(m.scheduledTime);
-    if (activeFilter === 'overdue') return diff < 0;
-    if (activeFilter === 'upcoming') return diff >= 0;
+    if (activeFilter === 'overdue') return m.is_overdue;
+    if (activeFilter === 'upcoming') return !m.is_overdue;
     return true;
   });
 
@@ -140,22 +149,22 @@ export default function MedicationsScreen() {
   }, []);
 
   function renderMed({ item }: { item: ScheduledMedication }) {
-    const diff = getTimeDiff(item.scheduledTime);
+    const diff = getTimeDiff(item.scheduled_time);
     const timeBadge = getTimeBadge(diff);
 
     return (
       <TouchableOpacity onPress={() => openModal(item)} activeOpacity={0.75}>
         <Card style={styles.medCard}>
           <View style={styles.medHeader}>
-            <Text style={styles.medName}>{item.medicationName}</Text>
+            <Text style={styles.medName}>{item.medication_name}</Text>
             <Badge label={timeBadge.label} color={timeBadge.color} />
           </View>
-          <Text style={styles.medResident}>👴 {item.residentName}</Text>
+          <Text style={styles.medResident}>👴 {item.resident_name}</Text>
           <View style={styles.medFooter}>
             <Text style={styles.medDosage}>
-              {item.dosage} {item.unit}
+              {item.dosage} {item.measurement_unit}
             </Text>
-            <Text style={styles.medTime}>🕐 {formatTime(item.scheduledTime)}</Text>
+            <Text style={styles.medTime}>🕐 {formatTime(item.scheduled_time)}</Text>
           </View>
         </Card>
       </TouchableOpacity>
@@ -233,7 +242,7 @@ export default function MedicationsScreen() {
             <Text style={styles.modalTitle}>Registrar Administração</Text>
             {selectedMed && (
               <Text style={styles.modalSubtitle}>
-                {selectedMed.medicationName} — {selectedMed.residentName}
+                {selectedMed.medication_name} — {selectedMed.resident_name}
               </Text>
             )}
 

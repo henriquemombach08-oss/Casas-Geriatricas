@@ -8,6 +8,8 @@ import visitorsRoutes from './visitors.routes.js';
 import reportsRoutes from './reports.routes.js';
 import notificationsRoutes from './notifications.routes.js';
 import usersRoutes from './users.routes.js';
+import aiRoutes from './ai.routes.js';
+import carePlansRoutes from './care-plans.routes.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
@@ -25,5 +27,7 @@ router.use('/visitors', visitorsRoutes);
 router.use('/reports', reportsRoutes);
 router.use('/notifications', notificationsRoutes);
 router.use('/users', usersRoutes);
+router.use('/ai', aiRoutes);
+router.use('/care-plans', carePlansRoutes);
 
 export default router;

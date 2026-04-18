@@ -6,10 +6,12 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
 import { env } from './config/env.js';
 import { logger } from './lib/logger.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { swaggerSpec } from './config/swagger.js';
 // Bull processors and cron only run outside serverless (Redis not available on Vercel)
 // VERCEL_ENV is set at runtime; VERCEL is build-only
 const isServerless = !!(process.env.VERCEL_ENV ?? process.env.VERCEL);
@@ -58,6 +60,9 @@ app.use(
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', env: env.NODE_ENV, timestamp: new Date().toISOString() });
 });
+
+// ─── API Docs ─────────────────────────────────────────────────────────────────
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api', routes);

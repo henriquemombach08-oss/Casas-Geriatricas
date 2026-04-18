@@ -8,6 +8,8 @@ import { MedicalHistory } from '@/components/residents/MedicalHistory';
 import { DocumentList } from '@/components/residents/DocumentList';
 import { AlertBadge } from '@/components/residents/AlertBadge';
 import { PhotoUpload } from '@/components/residents/PhotoUpload';
+import { CarePlansTab } from '@/components/residents/CarePlansTab';
+import { RiskScoreWidget } from '@/components/residents/RiskScoreWidget';
 import { formatDate } from '@/lib/utils';
 import {
   STATUS_LABELS,
@@ -194,6 +196,9 @@ export default function ResidentDetailPage({ params }: Props) {
           {/* Medical history */}
           <MedicalHistory medicalHistory={resident.medicalHistory} />
 
+          {/* Care Plans */}
+          <CarePlansTab residentId={id} />
+
           {/* Notes */}
           {(resident.notes || resident.specialNeeds) && (
             <div className="card">
@@ -220,6 +225,7 @@ export default function ResidentDetailPage({ params }: Props) {
 
         {/* Right sidebar */}
         <div className="space-y-6">
+          <RiskScoreWidget residentId={id} />
           <DocumentList residentId={id} documents={resident.documents} />
 
           {/* Quick links */}

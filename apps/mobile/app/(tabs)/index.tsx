@@ -24,13 +24,18 @@ function getGreeting(): string {
   return 'Boa noite';
 }
 
-interface PaginatedResponse {
-  data: unknown[];
-  total?: number;
-  pagination?: { total: number };
+interface ResidentsPaginatedData {
+  residents: unknown[];
+  pagination: { total: number; page: number; limit: number; pages: number };
+}
+
+interface ResidentsDashResponse {
+  success: boolean;
+  data: ResidentsPaginatedData;
 }
 
 interface UsersResponse {
+  success: boolean;
   data: unknown[];
 }
 
@@ -38,8 +43,16 @@ interface VisitorsResponse {
   data: unknown[];
 }
 
+interface MedsScheduledData {
+  date: string;
+  next_medications: unknown[];
+  total: number;
+  urgent_count: number;
+}
+
 interface MedsResponse {
-  data: unknown[];
+  success: boolean;
+  data: MedsScheduledData;
 }
 
 export default function DashboardScreen() {
@@ -57,13 +70,15 @@ export default function DashboardScreen() {
     });
   }, []);
 
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const residentsQuery = useQuery({
     queryKey: ['dashboard-residents'],
     queryFn: async () => {
-      const { data } = await api.get<PaginatedResponse>('/residents', {
+      const { data } = await api.get<ResidentsDashResponse>('/residents', {
         params: { status: 'active', limit: 1 },
       });
-      return data;
+      return data.data;
     },
     refetchInterval: 60000,
   });
@@ -74,7 +89,7 @@ export default function DashboardScreen() {
       const { data } = await api.get<UsersResponse>('/users', {
         params: { active: 'true' },
       });
-      return data;
+      return data.data as unknown[];
     },
     refetchInterval: 60000,
   });
@@ -83,9 +98,9 @@ export default function DashboardScreen() {
     queryKey: ['dashboard-visitors'],
     queryFn: async () => {
       const { data } = await api.get<VisitorsResponse>('/visitors', {
-        params: { status: 'inside' },
+        params: { date: todayStr },
       });
-      return data;
+      return data.data as unknown[];
     },
     refetchInterval: 60000,
   });
@@ -94,7 +109,7 @@ export default function DashboardScreen() {
     queryKey: ['dashboard-meds'],
     queryFn: async () => {
       const { data } = await api.get<MedsResponse>('/medications/scheduled/next');
-      return data;
+      return data.data;
     },
     refetchInterval: 60000,
   });
@@ -112,15 +127,10 @@ export default function DashboardScreen() {
     medsQuery.refetch();
   }, [residentsQuery, staffQuery, visitorsQuery, medsQuery]);
 
-  const residentsCount =
-    (residentsQuery.data as PaginatedResponse | undefined)?.pagination?.total ??
-    (residentsQuery.data as PaginatedResponse | undefined)?.total ??
-    (residentsQuery.data as PaginatedResponse | undefined)?.data?.length ??
-    0;
-
-  const staffCount = (staffQuery.data as UsersResponse | undefined)?.data?.length ?? 0;
-  const visitorsCount = (visitorsQuery.data as VisitorsResponse | undefined)?.data?.length ?? 0;
-  const medsCount = (medsQuery.data as MedsResponse | undefined)?.data?.length ?? 0;
+  const residentsCount = residentsQuery.data?.pagination?.total ?? 0;
+  const staffCount = staffQuery.data?.length ?? 0;
+  const visitorsCount = visitorsQuery.data?.length ?? 0;
+  const medsCount = medsQuery.data?.total ?? 0;
 
   const stats = [
     { label: 'Residentes Ativos', value: residentsCount, emoji: '👴', color: colors.primary },

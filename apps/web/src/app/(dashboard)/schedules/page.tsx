@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSchedules } from '@/hooks/useSchedules';
 import ScheduleCalendar from '@/components/schedules/ScheduleCalendar';
 import ScheduleStats from '@/components/schedules/ScheduleStats';
+import AISchedulePanel from '@/components/ai/AISchedulePanel';
 
 function formatMonthLabel(month: string) {
   const [year, mon] = month.split('-').map(Number);
@@ -25,6 +26,7 @@ function addMonths(month: string, delta: number) {
 
 export default function SchedulesPage() {
   const [month, setMonth] = useState(currentMonth);
+  const [showAI, setShowAI] = useState(false);
   const { data, isLoading } = useSchedules(month);
   const router = useRouter();
 
@@ -37,6 +39,12 @@ export default function SchedulesPage() {
           <p className="text-sm text-gray-500 mt-1 capitalize">{formatMonthLabel(month)}</p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={() => setShowAI((v) => !v)}
+            className={`btn-secondary text-sm flex items-center gap-1 ${showAI ? 'bg-purple-100 text-purple-700 border-purple-300' : ''}`}
+          >
+            🤖 IA {showAI ? '▲' : '▼'}
+          </button>
           <Link href="/schedules/confirmations" className="btn-secondary text-sm">
             Pendentes
           </Link>
@@ -73,6 +81,9 @@ export default function SchedulesPage() {
           Ver página do mês →
         </button>
       </div>
+
+      {/* AI Panel */}
+      {showAI && <AISchedulePanel month={month} />}
 
       {isLoading ? (
         <div className="card text-center py-12 text-gray-400">Carregando...</div>

@@ -8,16 +8,23 @@ import { colors, fontSize, fontWeight, spacing, radius } from '@/theme';
 
 interface Schedule {
   id: string;
-  userId?: string;
-  userName?: string;
-  staffName?: string;
-  date: string;
+  scheduleDate: string;
   shift: string;
-  notes?: string;
+  notes?: string | null;
+  user: { id: string; name: string; role: string };
 }
 
-interface SchedulesResponse {
-  data: Schedule[];
+interface SchedulesApiResponse {
+  success: boolean;
+  data: {
+    month: string | null;
+    schedules: Schedule[];
+    summary: {
+      total_scheduled: number;
+      total_confirmed: number;
+      total_no_show: number;
+    };
+  };
 }
 
 function formatWeekday(dateStr: string): string {
@@ -66,16 +73,15 @@ interface DayGroup {
 export default function SchedulesScreen() {
   const weekDates = getWeekDates();
 
+  const currentMonth = weekDates[0]!.slice(0, 7); // YYYY-MM
+
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ['schedules'],
+    queryKey: ['schedules', currentMonth],
     queryFn: async () => {
-      const { data } = await api.get<SchedulesResponse>('/schedules', {
-        params: {
-          startDate: weekDates[0],
-          endDate: weekDates[6],
-        },
+      const { data } = await api.get<SchedulesApiResponse>('/schedules', {
+        params: { month: currentMonth },
       });
-      return data.data;
+      return data.data.schedules;
     },
   });
 
@@ -83,7 +89,11 @@ export default function SchedulesScreen() {
 
   const grouped: DayGroup[] = weekDates.map((date) => ({
     date,
-    schedules: schedules.filter((s) => s.date.startsWith(date)),
+    schedules: schedules.filter((s) =>
+      typeof s.scheduleDate === 'string'
+        ? s.scheduleDate.startsWith(date)
+        : new Date(s.scheduleDate).toISOString().startsWith(date)
+    ),
   }));
 
   function renderDay({ item }: { item: DayGroup }) {
@@ -112,7 +122,7 @@ export default function SchedulesScreen() {
                 </View>
                 <View style={styles.scheduleInfo}>
                   <Text style={styles.staffName}>
-                    {s.userName ?? s.staffName ?? 'Funcionário'}
+                    {s.user?.name ?? 'Funcionário'}
                   </Text>
                   {s.notes ? (
                     <Text style={styles.scheduleNotes}>{s.notes}</Text>
