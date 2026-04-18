@@ -200,6 +200,7 @@ model User {
   role         UserRole
   customRole   String?   @map("custom_role")
   phone        String?   @db.VarChar(20)
+  pinHash        String?   @map("pin_hash")
   active         Boolean   @default(true)
   lastLogin      DateTime? @map("last_login")
   expoPushToken  String?   @map("expo_push_token")
@@ -640,11 +641,12 @@ model AuditLog {
   action     String   @db.VarChar(255)
   entityType String?  @map("entity_type") @db.VarChar(100)
   entityId   String?  @map("entity_id")
-  oldValues  Json?    @map("old_values")
-  newValues  Json?    @map("new_values")
-  ipAddress  String?  @map("ip_address") @db.VarChar(45)
-  userAgent  String?  @map("user_agent") @db.Text
-  createdAt  DateTime @default(now()) @map("created_at")
+  oldValues    Json?    @map("old_values")
+  newValues    Json?    @map("new_values")
+  pinVerified  Boolean  @default(false) @map("pin_verified")
+  ipAddress    String?  @map("ip_address") @db.VarChar(45)
+  userAgent    String?  @map("user_agent") @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
 
   house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
   user  User? @relation(fields: [userId], references: [id])

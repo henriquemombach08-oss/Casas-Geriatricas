@@ -10,6 +10,8 @@ import notificationsRoutes from './notifications.routes.js';
 import usersRoutes from './users.routes.js';
 import aiRoutes from './ai.routes.js';
 import carePlansRoutes from './care-plans.routes.js';
+import pinRoutes from './pin.routes.js';
+import auditRoutes from './audit.routes.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
@@ -29,5 +31,7 @@ router.use('/notifications', notificationsRoutes);
 router.use('/users', usersRoutes);
 router.use('/ai', aiRoutes);
 router.use('/care-plans', carePlansRoutes);
+router.use('/pin', pinRoutes);
+router.use('/audit', auditRoutes);
 
 export default router;

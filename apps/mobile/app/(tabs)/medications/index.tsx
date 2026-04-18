@@ -19,6 +19,7 @@ import { Badge } from '@/components/Badge';
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { Loading } from '@/components/Loading';
+import { PinModal } from '@/components/PinModal';
 import { Screen } from '@/components/Screen';
 import { api } from '@/lib/api';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
@@ -89,6 +90,7 @@ export default function MedicationsScreen() {
   const [logStatus, setLogStatus] = useState('administered');
   const [logNotes, setLogNotes] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [pinVisible, setPinVisible] = useState(false);
 
   const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['medications-scheduled'],
@@ -112,12 +114,14 @@ export default function MedicationsScreen() {
       id,
       status,
       notes,
+      pin,
     }: {
       id: string;
       status: string;
       notes: string;
+      pin: string;
     }) => {
-      await api.post(`/medications/${id}/logs`, { status, notes });
+      await api.post(`/medications/${id}/logs`, { status, notes }, { headers: { 'x-pin': pin } });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['medications-scheduled'] });
@@ -293,15 +297,7 @@ export default function MedicationsScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.confirmBtn, logMutation.isPending && styles.btnDisabled]}
-                onPress={() => {
-                  if (selectedMed) {
-                    logMutation.mutate({
-                      id: selectedMed.id,
-                      status: logStatus,
-                      notes: logNotes,
-                    });
-                  }
-                }}
+                onPress={() => setPinVisible(true)}
                 disabled={logMutation.isPending}
               >
                 <Text style={styles.confirmBtnText}>
@@ -312,6 +308,19 @@ export default function MedicationsScreen() {
           </KeyboardAvoidingView>
         </View>
       </Modal>
+
+      <PinModal
+        visible={pinVisible}
+        title="Confirmar administração"
+        description="Digite seu PIN para registrar a administração do medicamento."
+        onSuccess={(pin) => {
+          setPinVisible(false);
+          if (selectedMed) {
+            logMutation.mutate({ id: selectedMed.id, status: logStatus, notes: logNotes, pin });
+          }
+        }}
+        onCancel={() => setPinVisible(false)}
+      />
     </Screen>
   );
 }
