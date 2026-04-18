@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from '@/lib/queryClient';
-import { registerForPushNotifications, addResponseListener } from '@/src/services/notifications';
+import { registerForPushNotifications, addResponseListener } from '@/services/notifications';
 
 export default function RootLayout() {
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
