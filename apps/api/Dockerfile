@@ -17,4 +17,6 @@ RUN cd apps/api && pnpm build
 ENV NODE_ENV=production
 WORKDIR /app
 EXPOSE 3001
-CMD ["node", "apps/api/dist/index.js"]
+COPY apps/api/start.sh ./start.sh
+RUN chmod +x ./start.sh
+CMD ["sh", "./start.sh"]
