@@ -200,10 +200,11 @@ model User {
   role         UserRole
   customRole   String?   @map("custom_role")
   phone        String?   @db.VarChar(20)
-  active       Boolean   @default(true)
-  lastLogin    DateTime? @map("last_login")
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  active         Boolean   @default(true)
+  lastLogin      DateTime? @map("last_login")
+  expoPushToken  String?   @map("expo_push_token")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
   house             House              @relation(fields: [houseId], references: [id], onDelete: Cascade)
   workSchedules     WorkSchedule[]

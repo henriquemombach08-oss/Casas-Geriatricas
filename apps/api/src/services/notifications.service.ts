@@ -1,5 +1,8 @@
+import { Resend } from 'resend';
 import { env } from '../config/env.js';
 import { logger } from '../lib/logger.js';
+
+const resendClient = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Lazy-load Twilio only if configured
 function getTwilioClient() {
@@ -42,23 +45,12 @@ export async function sendWhatsApp(to: string, body: string): Promise<void> {
 }
 
 export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
-  if (!env.SMTP_HOST || !env.SMTP_USER) {
-    logger.warn('SMTP not configured, skipping email');
+  if (!resendClient) {
+    logger.warn({ to, subject }, 'RESEND_API_KEY não configurado — email não enviado');
     return;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const nodemailer = require('nodemailer') as {
-    createTransport: (opts: unknown) => { sendMail: (opts: unknown) => Promise<unknown> };
-  };
-
-  const transporter = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT ?? 587,
-    secure: env.SMTP_PORT === 465,
-    auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
-  });
-
-  await transporter.sendMail({ from: env.SMTP_FROM, to, subject, html });
-  logger.info({ to, subject }, 'Email sent');
+  const from = process.env.EMAIL_FROM ?? 'CasaGeri <noreply@casageriatrica.com.br>';
+  const { error } = await resendClient.emails.send({ from, to, subject, html });
+  if (error) logger.error({ error }, 'Resend error');
+  else logger.info({ to, subject }, 'Email enviado');
 }

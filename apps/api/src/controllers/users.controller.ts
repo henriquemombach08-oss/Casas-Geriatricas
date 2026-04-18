@@ -86,3 +86,16 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
     res.json({ success: true, message: 'Senha redefinida com sucesso' });
   } catch (err) { next(err); }
 }
+
+export async function registerPushToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const authReq = req as AuthRequest;
+    const { token } = req.body as { token: string };
+    if (!token) { res.status(400).json({ success: false, message: 'Token obrigatório' }); return; }
+    await prisma.user.update({
+      where: { id: authReq.userId },
+      data: { expoPushToken: token },
+    });
+    res.json({ success: true });
+  } catch (err) { next(err); }
+}
