@@ -1,4 +1,5 @@
 apps/web
 apps/api
-*.md
+.claude
 .git
+*.md
