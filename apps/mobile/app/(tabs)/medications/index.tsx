@@ -14,6 +14,7 @@ import {
   Vibration,
   View,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Badge } from '@/components/Badge';
 import { Card } from '@/components/Card';
@@ -84,6 +85,7 @@ function getTimeBadge(diff: number): { label: string; color: 'red' | 'yellow' | 
 }
 
 export default function MedicationsScreen() {
+  const router = useRouter();
   const qc = useQueryClient();
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [selectedMed, setSelectedMed] = useState<ScheduledMedication | null>(null);
@@ -309,6 +311,14 @@ export default function MedicationsScreen() {
         </View>
       </Modal>
 
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => router.push('/(tabs)/medications/new')}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
+
       <PinModal
         visible={pinVisible}
         title="Confirmar administração"
@@ -492,5 +502,27 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: spacing.xxl,
+    right: spacing.xl,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  fabText: {
+    color: colors.white,
+    fontSize: 28,
+    fontWeight: fontWeight.regular,
+    lineHeight: 32,
   },
 });

@@ -207,7 +207,7 @@ export default function FinancialScreen() {
   }
 
   return (
-    <>
+    <View style={styles.root}>
       {/* Resident filter */}
       <View style={styles.filterRow}>
         <TouchableOpacity
@@ -431,7 +431,7 @@ export default function FinancialScreen() {
           </KeyboardAvoidingView>
         </View>
       </Modal>
-    </>
+    </View>
   );
 }
 
@@ -506,6 +506,7 @@ const styles = StyleSheet.create({
   tabActive: { borderBottomColor: colors.primary },
   tabText: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: fontWeight.medium },
   tabTextActive: { color: colors.primary, fontWeight: fontWeight.semibold },
+  root: { flex: 1, backgroundColor: colors.background },
   list: { padding: spacing.lg },
   emptyContainer: { flex: 1 },
   item: { gap: spacing.sm },

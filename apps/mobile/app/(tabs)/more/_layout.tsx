@@ -16,6 +16,14 @@ export default function MoreLayout() {
       <Stack.Screen name="staff" options={{ title: 'Funcionários' }} />
       <Stack.Screen name="schedules" options={{ title: 'Escala de Trabalho' }} />
       <Stack.Screen name="settings" options={{ title: 'Configurações' }} />
+      <Stack.Screen name="ai-schedule" options={{ headerShown: false }} />
+      <Stack.Screen name="care-plans" options={{ headerShown: false }} />
+      <Stack.Screen name="risk-scores" options={{ headerShown: false }} />
+      <Stack.Screen name="reports/index" options={{ headerShown: false }} />
+      <Stack.Screen name="reports/financial" options={{ headerShown: false }} />
+      <Stack.Screen name="reports/medications" options={{ headerShown: false }} />
+      <Stack.Screen name="reports/residents" options={{ headerShown: false }} />
+      <Stack.Screen name="reports/staff" options={{ headerShown: false }} />
     </Stack>
   );
 }

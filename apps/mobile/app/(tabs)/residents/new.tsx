@@ -15,16 +15,43 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
 
+// ─── Formatters ──────────────────────────────────────────────────────────────
+
+function maskCPF(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 11);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+  if (digits.length <= 9)
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+  return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+}
+
+function maskPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 11);
+  if (digits.length <= 2) return digits.length ? `(${digits}` : '';
+  if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  if (digits.length <= 10)
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+function stripDigits(v: string): string {
+  return v.replace(/\D/g, '');
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 interface CreateResidentPayload {
   name: string;
   birthDate: string;
   gender: string;
-  cpf?: string;
+  cpf: string;
   phone?: string;
   email?: string;
   address?: string;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  admissionDate: string;
 }
 
 interface CreateResidentResponse {
@@ -77,8 +104,12 @@ export default function NewResidentScreen() {
       router.replace(`/(tabs)/residents/${newResident.id}`);
     },
     onError: (err: unknown) => {
-      const error = err as { response?: { data?: { message?: string } } };
-      Alert.alert('Erro', error?.response?.data?.message ?? 'Não foi possível criar o residente.');
+      const error = err as { response?: { data?: { message?: string; error?: string } } };
+      const msg =
+        error?.response?.data?.message ??
+        error?.response?.data?.error ??
+        'Não foi possível criar o residente.';
+      Alert.alert('Erro', msg);
     },
   });
 
@@ -88,24 +119,41 @@ export default function NewResidentScreen() {
       return;
     }
     if (!birthDate.trim()) {
-      Alert.alert('Atenção', 'Data de nascimento é obrigatória.');
+      Alert.alert('Atenção', 'Data de nascimento é obrigatória (AAAA-MM-DD).');
       return;
     }
     if (!gender) {
       Alert.alert('Atenção', 'Selecione o gênero.');
       return;
     }
+    const cpfDigits = stripDigits(cpf);
+    if (cpfDigits.length !== 11) {
+      Alert.alert('Atenção', 'CPF deve ter 11 dígitos.');
+      return;
+    }
+    if (!emergencyContactName.trim() || emergencyContactName.trim().length < 3) {
+      Alert.alert('Atenção', 'Nome do contato de emergência é obrigatório (mín. 3 caracteres).');
+      return;
+    }
+    const ecPhone = stripDigits(emergencyContactPhone);
+    if (ecPhone.length < 10) {
+      Alert.alert('Atenção', 'Telefone de emergência é obrigatório (10 ou 11 dígitos).');
+      return;
+    }
+
+    const today = new Date().toISOString().split('T')[0]!;
 
     mutation.mutate({
       name: name.trim(),
       birthDate,
       gender,
-      cpf: cpf.trim() || undefined,
-      phone: phone.trim() || undefined,
+      cpf: cpfDigits,
+      phone: stripDigits(phone) || undefined,
       email: email.trim() || undefined,
       address: address.trim() || undefined,
-      emergencyContactName: emergencyContactName.trim() || undefined,
-      emergencyContactPhone: emergencyContactPhone.trim() || undefined,
+      emergencyContactName: emergencyContactName.trim(),
+      emergencyContactPhone: ecPhone,
+      admissionDate: today,
     });
   }
 
@@ -126,9 +174,9 @@ export default function NewResidentScreen() {
         />
 
         <InputField
-          label="Data de nascimento (AAAA-MM-DD)"
+          label="Data de nascimento"
           required
-          placeholder="Ex.: 1940-05-12"
+          placeholder="AAAA-MM-DD (Ex.: 1940-05-12)"
           value={birthDate}
           onChangeText={setBirthDate}
           keyboardType="numeric"
@@ -159,12 +207,19 @@ export default function NewResidentScreen() {
           </View>
         </View>
 
-        <InputField label="CPF" placeholder="000.000.000-00" value={cpf} onChangeText={setCpf} />
+        <InputField
+          label="CPF"
+          required
+          placeholder="000.000.000-00"
+          value={cpf}
+          onChangeText={(v) => setCpf(maskCPF(v))}
+          keyboardType="numeric"
+        />
         <InputField
           label="Telefone"
           placeholder="(00) 00000-0000"
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(v) => setPhone(maskPhone(v))}
           keyboardType="phone-pad"
         />
         <InputField
@@ -182,18 +237,22 @@ export default function NewResidentScreen() {
           onChangeText={setAddress}
         />
 
-        <Text style={[styles.sectionTitle, { marginTop: spacing.xl }]}>Contato de emergência</Text>
+        <Text style={[styles.sectionTitle, { marginTop: spacing.xl }]}>
+          Contato de emergência
+        </Text>
         <InputField
           label="Nome"
-          placeholder="Nome do contato"
+          required
+          placeholder="Nome completo do contato"
           value={emergencyContactName}
           onChangeText={setEmergencyContactName}
         />
         <InputField
           label="Telefone"
+          required
           placeholder="(00) 00000-0000"
           value={emergencyContactPhone}
-          onChangeText={setEmergencyContactPhone}
+          onChangeText={(v) => setEmergencyContactPhone(maskPhone(v))}
           keyboardType="phone-pad"
         />
 
