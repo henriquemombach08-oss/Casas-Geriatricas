@@ -14,8 +14,8 @@ function NewChargeContent() {
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nova Cobrança</h1>
-          <p className="text-sm text-gray-500 mt-1">Registrar cobrança ou pagamento</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Nova Cobrança</h1>
+          <p className="text-sm text-stone-500 mt-1">Registrar cobrança ou pagamento</p>
         </div>
         <Link
           href={residentId ? `/financial/residents/${residentId}` : '/financial'}
@@ -41,7 +41,7 @@ function NewChargeContent() {
 
 export default function NewChargePage() {
   return (
-    <Suspense fallback={<div className="h-32 animate-pulse rounded-lg bg-gray-100" />}>
+    <Suspense fallback={<div className="h-32 animate-pulse rounded-lg bg-stone-100" />}>
       <NewChargeContent />
     </Suspense>
   );

@@ -106,7 +106,7 @@ export function ResidentForm({ defaultValues, onSubmit, isLoading, isEdit = fals
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
       {/* DADOS PESSOAIS */}
       <section>
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b">
+        <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-4 pb-2 border-b">
           Dados Pessoais
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -172,7 +172,7 @@ export function ResidentForm({ defaultValues, onSubmit, isLoading, isEdit = fals
 
       {/* CONTATO */}
       <section>
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b">
+        <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-4 pb-2 border-b">
           Contato
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -195,7 +195,7 @@ export function ResidentForm({ defaultValues, onSubmit, isLoading, isEdit = fals
 
       {/* ENDEREÇO */}
       <section>
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b">
+        <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-4 pb-2 border-b">
           Endereço
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -239,7 +239,7 @@ export function ResidentForm({ defaultValues, onSubmit, isLoading, isEdit = fals
 
       {/* CONTATO DE EMERGÊNCIA */}
       <section>
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b">
+        <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-4 pb-2 border-b">
           Contato de Emergência
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -274,7 +274,7 @@ export function ResidentForm({ defaultValues, onSubmit, isLoading, isEdit = fals
 
       {/* SAÚDE + ADMISSÃO */}
       <section>
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b">
+        <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-4 pb-2 border-b">
           Saúde e Admissão
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -302,7 +302,7 @@ export function ResidentForm({ defaultValues, onSubmit, isLoading, isEdit = fals
 
       {/* NOTAS */}
       <section>
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b">
+        <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-4 pb-2 border-b">
           Observações
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

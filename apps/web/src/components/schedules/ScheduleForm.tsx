@@ -80,7 +80,7 @@ export default function ScheduleForm({ month, onSuccess, onCancel }: Props) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500 border-b">
+            <tr className="text-left text-stone-500 border-b">
               <th className="pb-2 pr-3 font-medium">Funcionário</th>
               <th className="pb-2 pr-3 font-medium">Data</th>
               <th className="pb-2 pr-3 font-medium">Turno</th>

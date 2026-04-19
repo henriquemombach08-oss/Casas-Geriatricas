@@ -26,12 +26,12 @@ function NewMedicationContent() {
       <div className="mb-6">
         <button
           onClick={() => router.back()}
-          className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-2"
+          className="text-sm text-stone-500 hover:text-stone-700 flex items-center gap-1 mb-2"
         >
           ← Voltar
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">Nova Prescrição</h1>
-        <p className="text-gray-500 mt-1 text-sm">
+        <h1 className="text-2xl font-bold text-stone-900">Nova Prescrição</h1>
+        <p className="text-stone-500 mt-1 text-sm">
           Preencha todos os dados da prescrição médica com cuidado.
         </p>
       </div>

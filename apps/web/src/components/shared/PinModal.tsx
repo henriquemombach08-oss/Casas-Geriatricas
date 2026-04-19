@@ -71,8 +71,8 @@ export function PinModal({
           </div>
 
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-            <p className="text-sm text-gray-500 mt-1">{description}</p>
+            <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+            <p className="text-sm text-stone-500 mt-1">{description}</p>
           </div>
 
           <div className="flex gap-3 mt-2" onPaste={handlePaste}>
@@ -88,7 +88,7 @@ export function PinModal({
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 disabled={loading}
                 className={`w-11 h-14 text-center text-xl font-bold rounded-xl border-2 outline-none transition-all
-                  ${error ? 'border-red-400 bg-red-50' : d ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-gray-50'}
+                  ${error ? 'border-red-400 bg-red-50' : d ? 'border-blue-500 bg-blue-50' : 'border-stone-200 bg-stone-50'}
                   focus:border-blue-500 focus:bg-blue-50 disabled:opacity-50`}
               />
             ))}
@@ -99,7 +99,7 @@ export function PinModal({
           )}
 
           {loading && (
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-stone-500">
               <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -111,7 +111,7 @@ export function PinModal({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="mt-2 text-sm text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+            className="mt-2 text-sm text-stone-400 hover:text-stone-600 transition-colors disabled:opacity-50"
           >
             Cancelar
           </button>

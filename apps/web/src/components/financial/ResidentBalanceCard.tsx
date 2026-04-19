@@ -29,10 +29,10 @@ export default function ResidentBalanceCard({
 
   return (
     <>
-      <div className={`border-2 rounded-xl p-4 space-y-3 ${hasOverdue ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-white'}`}>
+      <div className={`border-2 rounded-xl p-4 space-y-3 ${hasOverdue ? 'border-red-300 bg-red-50' : 'border-stone-200 bg-white'}`}>
         <div className="flex items-start justify-between">
           <div>
-            <p className="font-bold text-gray-900">{residentName}</p>
+            <p className="font-bold text-stone-900">{residentName}</p>
             <Link href={`/financial/residents/${residentId}`} className="text-xs text-blue-600 hover:underline">
               Ver histórico →
             </Link>
@@ -53,7 +53,7 @@ export default function ResidentBalanceCard({
           )}
           {pendingAmount > 0 && (
             <div className="flex justify-between">
-              <span className="text-gray-600">Pendente:</span>
+              <span className="text-stone-600">Pendente:</span>
               <span className="font-semibold">{formatCurrency(pendingAmount)}</span>
             </div>
           )}

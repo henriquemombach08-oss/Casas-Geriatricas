@@ -43,14 +43,14 @@ export default function MedicationSchedulePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard Medicamentos</h1>
-          <p className="text-gray-500 mt-1">
+          <h1 className="text-3xl font-bold text-stone-900">Dashboard Medicamentos</h1>
+          <p className="text-stone-500 mt-1">
             Próximos medicamentos a serem administrados
           </p>
         </div>
         <button
           onClick={() => void refetch()}
-          className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium flex items-center gap-2 transition"
+          className="px-4 py-2 bg-white border border-stone-300 text-stone-700 rounded-lg hover:bg-stone-50 text-sm font-medium flex items-center gap-2 transition"
         >
           Atualizar
         </button>
@@ -84,7 +84,7 @@ export default function MedicationSchedulePage() {
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
             filter === 'overdue'
               ? 'bg-red-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
           }`}
         >
           Atrasados ({schedule?.next_medications.filter((m) => m.is_overdue).length ?? 0})
@@ -94,7 +94,7 @@ export default function MedicationSchedulePage() {
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
             filter === 'upcoming_30'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
           }`}
         >
           Próximos 30 min
@@ -103,8 +103,8 @@ export default function MedicationSchedulePage() {
           onClick={() => setFilter('all')}
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
             filter === 'all'
-              ? 'bg-gray-700 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-stone-700 text-white'
+              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
           }`}
         >
           Todos do dia ({schedule?.total ?? 0})
@@ -117,7 +117,7 @@ export default function MedicationSchedulePage() {
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-stone-400">
           <div className="text-5xl mb-4">✓</div>
           <p className="text-lg font-medium">
             {filter === 'overdue'

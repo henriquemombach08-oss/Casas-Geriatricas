@@ -39,22 +39,22 @@ export default function PaymentModal({ record, residentName, onClose }: Props) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
         <div className="flex items-start justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Registrar Pagamento</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">
+          <h2 className="text-lg font-bold text-stone-900">Registrar Pagamento</h2>
+          <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-xl leading-none">
             ×
           </button>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-3 text-sm space-y-1">
+        <div className="bg-stone-50 rounded-lg p-3 text-sm space-y-1">
           <p className="font-semibold">{residentName}</p>
-          <p className="text-gray-600">{record.description}</p>
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-stone-600">{record.description}</p>
+          <p className="text-lg font-bold text-stone-900">
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(record.amount)}
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Data do pagamento</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Data do pagamento</label>
           <input
             type="date"
             value={paidDate}
@@ -64,7 +64,7 @@ export default function PaymentModal({ record, residentName, onClose }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Forma de pagamento</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Forma de pagamento</label>
           <select
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
@@ -77,7 +77,7 @@ export default function PaymentModal({ record, residentName, onClose }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Observações</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}

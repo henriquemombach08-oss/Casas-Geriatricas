@@ -91,8 +91,8 @@ export default function VisitorsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Visitantes</h1>
-          <p className="mt-1 text-sm text-gray-500">Registro de visitas dos residentes</p>
+          <h1 className="page-title">Visitantes</h1>
+          <p className="mt-1 text-sm text-stone-500">Registro de visitas dos residentes</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm">
           + Nova Visita
@@ -101,7 +101,7 @@ export default function VisitorsPage() {
 
       {showForm && (
         <div className="card space-y-4">
-          <h2 className="font-semibold text-gray-800 dark:text-white">Registrar Visita</h2>
+          <h2 className="font-semibold text-stone-800 dark:text-white">Registrar Visita</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="label">Residente visitado</label>
@@ -133,7 +133,7 @@ export default function VisitorsPage() {
                 <input type="checkbox" id="noSchedule" checked={form.noSchedule}
                   onChange={e => setForm(f => ({ ...f, noSchedule: e.target.checked }))}
                   className="rounded" />
-                <label htmlFor="noSchedule" className="text-sm text-gray-600 dark:text-gray-300">
+                <label htmlFor="noSchedule" className="text-sm text-stone-600 dark:text-stone-300">
                   Sem horário definido
                 </label>
               </div>
@@ -163,27 +163,27 @@ export default function VisitorsPage() {
 
       <div className="card p-0 overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-gray-400">Carregando...</div>
+          <div className="p-8 text-center text-stone-400">Carregando...</div>
         ) : visitors.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">Nenhuma visita registrada.</div>
+          <div className="p-8 text-center text-stone-400">Nenhuma visita registrada.</div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-100 text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800">
+          <table className="min-w-full divide-y divide-stone-100 text-sm">
+            <thead className="bg-stone-50 dark:bg-stone-800">
               <tr>
                 {['Visitante', 'Residente', 'Parentesco', 'Agendado', 'Entrada', 'Saída', 'Ações'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left font-semibold text-stone-600 dark:text-stone-300">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 bg-white dark:bg-gray-900">
+            <tbody className="divide-y divide-stone-100 bg-white dark:bg-stone-900">
               {visitors.map(v => (
-                <tr key={v.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{v.visitorName}</td>
-                  <td className="px-4 py-3 text-gray-500">{v.residentName || '—'}</td>
-                  <td className="px-4 py-3 text-gray-500">{v.relationship || '—'}</td>
-                  <td className="px-4 py-3 text-gray-500">{fmt(v.scheduledAt)}</td>
-                  <td className="px-4 py-3 text-gray-500">{fmt(v.checkedInAt)}</td>
-                  <td className="px-4 py-3 text-gray-500">{fmt(v.checkedOutAt)}</td>
+                <tr key={v.id} className="hover:bg-stone-50 dark:hover:bg-stone-800">
+                  <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{v.visitorName}</td>
+                  <td className="px-4 py-3 text-stone-500">{v.residentName || '—'}</td>
+                  <td className="px-4 py-3 text-stone-500">{v.relationship || '—'}</td>
+                  <td className="px-4 py-3 text-stone-500">{fmt(v.scheduledAt)}</td>
+                  <td className="px-4 py-3 text-stone-500">{fmt(v.checkedInAt)}</td>
+                  <td className="px-4 py-3 text-stone-500">{fmt(v.checkedOutAt)}</td>
                   <td className="px-4 py-3">
                     {!v.checkedInAt && (
                       <button onClick={() => checkIn.mutate(v.id)}
@@ -197,7 +197,7 @@ export default function VisitorsPage() {
                         Check-out
                       </button>
                     )}
-                    {v.checkedOutAt && <span className="text-xs text-gray-400">Concluída</span>}
+                    {v.checkedOutAt && <span className="text-xs text-stone-400">Concluída</span>}
                   </td>
                 </tr>
               ))}

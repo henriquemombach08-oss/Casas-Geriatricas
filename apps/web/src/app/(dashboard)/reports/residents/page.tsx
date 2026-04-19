@@ -39,22 +39,22 @@ export default function ResidentsReportPage() {
     <ErrorBoundary>
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Relatório de Residentes</h1>
-        <p className="mt-1 text-sm text-gray-500">Ocupação, perfil dos residentes e distribuição</p>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Relatório de Residentes</h1>
+        <p className="mt-1 text-sm text-stone-500">Ocupação, perfil dos residentes e distribuição</p>
       </div>
 
       <FilterBar period={period} onPeriodChange={setPeriod} />
 
       {isLoading ? (
-        <div className="h-32 animate-pulse rounded-lg bg-gray-100" />
+        <div className="h-32 animate-pulse rounded-lg bg-stone-100" />
       ) : (
         <MetricsGrid metrics={metrics} cols={3} />
       )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {occupancy && (
-          <div className="rounded-xl border border-gray-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-gray-800">Ocupação — Últimos 6 meses</h2>
+          <div className="rounded-xl border border-stone-200 bg-white p-5">
+            <h2 className="mb-4 text-base font-semibold text-stone-800">Ocupação — Últimos 6 meses</h2>
             <OccupancyAreaChart
               data={occupancy.monthly_trend}
               capacity={occupancy.total_capacity}
@@ -63,15 +63,15 @@ export default function ResidentsReportPage() {
         )}
 
         {ageData.length > 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-gray-800">Distribuição por Faixa Etária</h2>
+          <div className="rounded-xl border border-stone-200 bg-white p-5">
+            <h2 className="mb-4 text-base font-semibold text-stone-800">Distribuição por Faixa Etária</h2>
             <DistributionPieChart data={ageData} />
           </div>
         )}
 
         {diagData.length > 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-gray-800">Principais Diagnósticos</h2>
+          <div className="rounded-xl border border-stone-200 bg-white p-5">
+            <h2 className="mb-4 text-base font-semibold text-stone-800">Principais Diagnósticos</h2>
             <DistributionPieChart
               data={diagData}
               colors={['#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6', '#3b82f6', '#ef4444']}
@@ -80,8 +80,8 @@ export default function ResidentsReportPage() {
         )}
 
         {dash && dash.care_levels.length > 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-gray-800">Nível de Cuidado</h2>
+          <div className="rounded-xl border border-stone-200 bg-white p-5">
+            <h2 className="mb-4 text-base font-semibold text-stone-800">Nível de Cuidado</h2>
             <DistributionPieChart
               data={dash.care_levels.map((c) => ({ name: c.level, value: c.count }))}
               colors={['#22c55e', '#f59e0b', '#ef4444', '#8b5cf6']}

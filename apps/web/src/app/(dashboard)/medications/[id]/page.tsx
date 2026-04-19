@@ -32,7 +32,7 @@ export default function MedicationDetailPage() {
 
   if (!data) {
     return (
-      <div className="p-6 text-center text-gray-500">Medicamento não encontrado.</div>
+      <div className="p-6 text-center text-stone-500">Medicamento não encontrado.</div>
     );
   }
 
@@ -63,20 +63,20 @@ export default function MedicationDetailPage() {
         <div>
           <button
             onClick={() => router.back()}
-            className="text-sm text-gray-500 hover:text-gray-700 mb-2 flex items-center gap-1"
+            className="text-sm text-stone-500 hover:text-stone-700 mb-2 flex items-center gap-1"
           >
             ← Voltar
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">{medication.name}</h1>
+          <h1 className="text-2xl font-bold text-stone-900">{medication.name}</h1>
           {medication.activeIngredient && (
-            <p className="text-gray-500 text-sm">{medication.activeIngredient}</p>
+            <p className="text-stone-500 text-sm">{medication.activeIngredient}</p>
           )}
           <div className="flex items-center gap-2 mt-2">
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                 medication.status === 'active'
                   ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-600'
+                  : 'bg-stone-100 text-stone-600'
               }`}
             >
               {medication.status === 'active' ? 'Ativo' : 'Inativo'}
@@ -88,7 +88,7 @@ export default function MedicationDetailPage() {
           <div className="flex gap-2">
             <Link
               href={`/medications/${medication.id}/edit`}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+              className="px-4 py-2 border border-stone-300 rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
             >
               Editar
             </Link>
@@ -104,10 +104,10 @@ export default function MedicationDetailPage() {
 
       {/* Inactive warning */}
       {medication.status === 'inactive' && (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-          <p className="font-semibold text-gray-700">Medicamento descontinuado</p>
+        <div className="bg-stone-50 border border-stone-200 rounded-xl p-4">
+          <p className="font-semibold text-stone-700">Medicamento descontinuado</p>
           {medication.reasonIfInactive && (
-            <p className="text-gray-600 text-sm mt-1">
+            <p className="text-stone-600 text-sm mt-1">
               Motivo: {medication.reasonIfInactive}
             </p>
           )}
@@ -118,27 +118,27 @@ export default function MedicationDetailPage() {
       <div className="bg-white border rounded-xl divide-y">
         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Dose</p>
-            <p className="font-semibold text-gray-900">
+            <p className="text-xs text-stone-500 uppercase tracking-wide">Dose</p>
+            <p className="font-semibold text-stone-900">
               {medication.dosage ?? '—'}
               {medication.measurementUnit && ` ${UNIT_LABELS[medication.measurementUnit] ?? medication.measurementUnit}`}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Frequência</p>
-            <p className="font-semibold text-gray-900">
+            <p className="text-xs text-stone-500 uppercase tracking-wide">Frequência</p>
+            <p className="font-semibold text-stone-900">
               {medication.frequencyDescription ?? medication.frequency ?? '—'}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Início</p>
-            <p className="font-semibold text-gray-900">
+            <p className="text-xs text-stone-500 uppercase tracking-wide">Início</p>
+            <p className="font-semibold text-stone-900">
               {new Date(medication.startDate).toLocaleDateString('pt-BR')}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Término</p>
-            <p className="font-semibold text-gray-900">
+            <p className="text-xs text-stone-500 uppercase tracking-wide">Término</p>
+            <p className="font-semibold text-stone-900">
               {medication.endDate
                 ? new Date(medication.endDate).toLocaleDateString('pt-BR')
                 : 'Uso contínuo'}
@@ -147,7 +147,7 @@ export default function MedicationDetailPage() {
         </div>
 
         <div className="p-4">
-          <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Horários</p>
+          <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">Horários</p>
           <div className="flex flex-wrap gap-2">
             {medication.scheduledTimes.map((t) => (
               <span
@@ -162,13 +162,13 @@ export default function MedicationDetailPage() {
 
         {(medication.prescriberName || medication.prescriberCrm) && (
           <div className="p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Prescritor</p>
-            <p className="font-semibold text-gray-900">{medication.prescriberName}</p>
+            <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">Prescritor</p>
+            <p className="font-semibold text-stone-900">{medication.prescriberName}</p>
             {medication.prescriberCrm && (
-              <p className="text-sm text-gray-500">CRM {medication.prescriberCrm}</p>
+              <p className="text-sm text-stone-500">CRM {medication.prescriberCrm}</p>
             )}
             {medication.prescriberPhone && (
-              <p className="text-sm text-gray-500">{medication.prescriberPhone}</p>
+              <p className="text-sm text-stone-500">{medication.prescriberPhone}</p>
             )}
           </div>
         )}
@@ -202,15 +202,15 @@ export default function MedicationDetailPage() {
 
         {medication.sideEffects && (
           <div className="p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Efeitos colaterais</p>
-            <p className="text-gray-700 text-sm">{medication.sideEffects}</p>
+            <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Efeitos colaterais</p>
+            <p className="text-stone-700 text-sm">{medication.sideEffects}</p>
           </div>
         )}
       </div>
 
       {/* History */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Histórico e aderência</h2>
+        <h2 className="text-lg font-bold text-stone-900 mb-4">Histórico e aderência</h2>
         <MedicationHistory medicationId={id} />
       </div>
 
@@ -218,21 +218,21 @@ export default function MedicationDetailPage() {
       {showDiscontinue && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">
+            <h2 className="text-xl font-bold text-stone-900 mb-2">
               Descontinuar medicamento
             </h2>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className="text-stone-600 text-sm mb-4">
               O medicamento será desativado. Esta ação será registrada no histórico.
             </p>
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-stone-700 mb-1">
                 Motivo *
               </label>
               <textarea
                 value={discontinueReason}
                 onChange={(e) => setDiscontinueReason(e.target.value)}
                 placeholder="Ex: Prescrição finalizada pelo médico, residente de alta..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 rows={3}
               />
             </div>
@@ -242,7 +242,7 @@ export default function MedicationDetailPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDiscontinue(false)}
-                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition"
+                className="flex-1 px-4 py-2 bg-stone-100 text-stone-700 rounded-lg font-semibold hover:bg-stone-200 transition"
               >
                 Cancelar
               </button>

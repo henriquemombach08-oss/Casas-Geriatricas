@@ -75,10 +75,10 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Registrar Medicamento</h2>
+          <h2 className="text-xl font-bold text-stone-900">Registrar Medicamento</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+            className="text-stone-400 hover:text-stone-600 text-2xl leading-none"
           >
             &times;
           </button>
@@ -95,8 +95,8 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
               />
             )}
             <div>
-              <p className="font-bold text-gray-900">{medication.resident_name}</p>
-              <p className="text-sm text-gray-600">
+              <p className="font-bold text-stone-900">{medication.resident_name}</p>
+              <p className="text-sm text-stone-600">
                 {medication.medication_name}
                 {medication.dosage && ` — ${medication.dosage}`}
                 {medication.measurement_unit && ` ${medication.measurement_unit}`}
@@ -125,13 +125,13 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
 
         {/* Status */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-stone-700 mb-1">
             Status *
           </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as MedicationLogStatus)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {STATUS_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -142,7 +142,7 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
         {/* Dosagem parcial */}
         {requiresDosage && (
           <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Dosagem administrada *
             </label>
             <input
@@ -150,7 +150,7 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
               value={dosageActuallyGiven}
               onChange={(e) => setDosageActuallyGiven(e.target.value)}
               placeholder="Ex: metade do comprimido"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         )}
@@ -158,14 +158,14 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
         {/* Motivo */}
         {requiresReason && (
           <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Motivo *
             </label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Ex: Residente recusou, estava dormindo, sem estoque..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
             />
           </div>
@@ -173,7 +173,7 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
 
         {/* Queixa do residente */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-stone-700 mb-1">
             Queixa do residente (opcional)
           </label>
           <input
@@ -181,20 +181,20 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
             value={residentComplaint}
             onChange={(e) => setResidentComplaint(e.target.value)}
             placeholder="Ex: Tontura, náusea..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         {/* Notas */}
         <div className="mb-5">
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-stone-700 mb-1">
             Observações (opcional)
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Ex: Tomou com bastante água, reagiu bem..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={2}
           />
         </div>
@@ -206,7 +206,7 @@ export default function AdministrationModal({ medication, onClose, onSuccess }: 
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition"
+            className="flex-1 px-4 py-2 bg-stone-100 text-stone-700 rounded-lg font-semibold hover:bg-stone-200 transition"
           >
             Cancelar
           </button>

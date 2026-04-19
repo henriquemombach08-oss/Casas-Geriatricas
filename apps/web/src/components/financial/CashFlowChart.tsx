@@ -10,7 +10,7 @@ interface Props {
 export default function CashFlowChart({ cashFlow }: Props) {
   if (!cashFlow) {
     return (
-      <div className="card flex items-center justify-center py-12 text-gray-400 text-sm">
+      <div className="card flex items-center justify-center py-12 text-stone-400 text-sm">
         Sem dados de fluxo de caixa
       </div>
     );
@@ -28,7 +28,7 @@ export default function CashFlowChart({ cashFlow }: Props) {
   return (
     <div className="card space-y-4">
       <div className="flex items-start justify-between">
-        <h2 className="font-bold text-gray-900">Fluxo de Caixa</h2>
+        <h2 className="font-bold text-stone-900">Fluxo de Caixa</h2>
         <span className={`text-sm font-semibold ${isUp ? 'text-green-600' : 'text-red-600'}`}>
           {isUp ? '↑' : '↓'} {diffPct}%
         </span>
@@ -36,11 +36,11 @@ export default function CashFlowChart({ cashFlow }: Props) {
 
       <div className="space-y-3">
         <div>
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
+          <div className="flex justify-between text-sm text-stone-600 mb-1">
             <span>Este mês</span>
             <span className="font-semibold">{formatCurrency(cashFlow.this_month)}</span>
           </div>
-          <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-4 bg-stone-100 rounded-full overflow-hidden">
             <div
               className="h-full bg-blue-500 rounded-full transition-all"
               style={{ width: `${thisMonthPct}%` }}
@@ -49,20 +49,20 @@ export default function CashFlowChart({ cashFlow }: Props) {
         </div>
 
         <div>
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
+          <div className="flex justify-between text-sm text-stone-600 mb-1">
             <span>Mês passado</span>
             <span className="font-semibold">{formatCurrency(cashFlow.last_month)}</span>
           </div>
-          <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-4 bg-stone-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gray-400 rounded-full transition-all"
+              className="h-full bg-stone-400 rounded-full transition-all"
               style={{ width: `${lastMonthPct}%` }}
             />
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-stone-500">
         Diferença: <span className={`font-semibold ${isUp ? 'text-green-600' : 'text-red-600'}`}>
           {isUp ? '+' : ''}{formatCurrency(diff)}
         </span>

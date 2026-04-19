@@ -31,22 +31,22 @@ export default function ConfirmationModal({ schedule, onClose }: Props) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
         <div className="flex items-start justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Confirmar Escala</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">
+          <h2 className="text-lg font-bold text-stone-900">Confirmar Escala</h2>
+          <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-xl leading-none">
             ×
           </button>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-          <p className="font-semibold text-gray-900 capitalize">{dateStr}</p>
+        <div className="bg-stone-50 rounded-lg p-4 space-y-2">
+          <p className="font-semibold text-stone-900 capitalize">{dateStr}</p>
           <ShiftBadge shift={schedule.shift} />
           {schedule.notes && (
-            <p className="text-sm text-gray-600 italic mt-1">{schedule.notes}</p>
+            <p className="text-sm text-stone-600 italic mt-1">{schedule.notes}</p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-stone-700 mb-1">
             Observação (opcional)
           </label>
           <textarea

@@ -23,8 +23,8 @@ export default function ConfirmationsPage() {
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Confirmações Pendentes</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Confirmações Pendentes</h1>
+          <p className="text-sm text-stone-500 mt-1">
             {pending.length} funcionário{pending.length !== 1 ? 's' : ''} ainda não confirmou
           </p>
         </div>
@@ -34,9 +34,9 @@ export default function ConfirmationsPage() {
       </div>
 
       {isLoading ? (
-        <div className="card text-center py-12 text-gray-400">Carregando...</div>
+        <div className="card text-center py-12 text-stone-400">Carregando...</div>
       ) : pending.length === 0 ? (
-        <div className="card text-center py-12 text-gray-500">
+        <div className="card text-center py-12 text-stone-500">
           Todos confirmados! Nenhuma pendência.
         </div>
       ) : (

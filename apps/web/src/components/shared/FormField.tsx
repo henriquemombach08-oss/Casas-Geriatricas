@@ -22,7 +22,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           className={cn('input', error && 'border-red-400 focus:ring-red-400', className)}
           {...props}
         />
-        {hint && !error && <p className="text-xs text-gray-500">{hint}</p>}
+        {hint && !error && <p className="text-xs text-stone-500">{hint}</p>}
         {error && <p className="text-xs text-red-500">{error}</p>}
       </div>
     );

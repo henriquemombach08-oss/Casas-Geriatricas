@@ -113,7 +113,7 @@ export default function MedicationForm({
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
       {/* Medicamento */}
       <fieldset>
-        <legend className="text-base font-bold text-gray-900 mb-4 pb-2 border-b">
+        <legend className="text-base font-bold text-stone-900 mb-4 pb-2 border-b">
           Medicamento
         </legend>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -134,10 +134,10 @@ export default function MedicationForm({
             {...register('dosage')}
           />
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Unidade</label>
+            <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Unidade</label>
             <select
               {...register('measurementUnit')}
-              className="input text-gray-900 dark:text-white bg-white dark:bg-gray-700"
+              className="input text-stone-900 dark:text-white bg-white dark:bg-stone-700"
             >
               <option value="">Selecione...</option>
               <option value="mg">mg</option>
@@ -155,7 +155,7 @@ export default function MedicationForm({
 
       {/* Frequência */}
       <fieldset>
-        <legend className="text-base font-bold text-gray-900 mb-4 pb-2 border-b">
+        <legend className="text-base font-bold text-stone-900 mb-4 pb-2 border-b">
           Frequência e horários
         </legend>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -176,7 +176,7 @@ export default function MedicationForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-stone-700 mb-2">
             Horários * ({fields.length} de {timesPerDay || 0})
           </label>
           <div className="space-y-2 mb-3">
@@ -215,7 +215,7 @@ export default function MedicationForm({
 
       {/* Período */}
       <fieldset>
-        <legend className="text-base font-bold text-gray-900 mb-4 pb-2 border-b">
+        <legend className="text-base font-bold text-stone-900 mb-4 pb-2 border-b">
           Período
         </legend>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -240,7 +240,7 @@ export default function MedicationForm({
 
       {/* Prescritor */}
       <fieldset>
-        <legend className="text-base font-bold text-gray-900 mb-4 pb-2 border-b">
+        <legend className="text-base font-bold text-stone-900 mb-4 pb-2 border-b">
           Prescritor
         </legend>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -270,7 +270,7 @@ export default function MedicationForm({
 
       {/* Avisos e instruções */}
       <fieldset>
-        <legend className="text-base font-bold text-gray-900 mb-4 pb-2 border-b">
+        <legend className="text-base font-bold text-stone-900 mb-4 pb-2 border-b">
           Avisos e instruções
         </legend>
         <div className="space-y-4">
@@ -314,7 +314,7 @@ export default function MedicationForm({
       {/* Motivo da alteração (somente no edit) */}
       {isEdit && (
         <fieldset>
-          <legend className="text-base font-bold text-gray-900 mb-4 pb-2 border-b">
+          <legend className="text-base font-bold text-stone-900 mb-4 pb-2 border-b">
             Alteração
           </legend>
           <TextareaField
@@ -338,7 +338,7 @@ export default function MedicationForm({
         <button
           type="button"
           onClick={() => window.history.back()}
-          className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition"
+          className="px-6 py-2.5 bg-stone-100 text-stone-700 rounded-lg font-semibold hover:bg-stone-200 transition"
         >
           Cancelar
         </button>

@@ -19,7 +19,7 @@ export default function ScheduleMonthPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white capitalize">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white capitalize">
             Escala — {formatMonthLabel(month)}
           </h1>
         </div>
@@ -34,7 +34,7 @@ export default function ScheduleMonthPage() {
       </div>
 
       {isLoading ? (
-        <div className="card text-center py-12 text-gray-400">Carregando...</div>
+        <div className="card text-center py-12 text-stone-400">Carregando...</div>
       ) : (
         <>
           <ScheduleStats summary={data?.summary} />

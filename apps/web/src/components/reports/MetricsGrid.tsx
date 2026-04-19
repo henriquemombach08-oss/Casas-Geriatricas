@@ -21,7 +21,7 @@ const colorMap = {
   red:    'bg-red-50 text-red-700 border-red-200',
   yellow: 'bg-yellow-50 text-yellow-700 border-yellow-200',
   purple: 'bg-purple-50 text-purple-700 border-purple-200',
-  gray:   'bg-gray-50 text-gray-700 border-gray-200',
+  gray:   'bg-stone-50 text-stone-700 border-stone-200',
 };
 
 export default function MetricsGrid({ metrics, cols = 4 }: MetricsGridProps) {

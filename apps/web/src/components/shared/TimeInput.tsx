@@ -12,7 +12,7 @@ const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
     return (
       <div className="flex flex-col gap-1">
         {label && (
-          <label className="text-sm font-medium text-gray-700">{label}</label>
+          <label className="text-sm font-medium text-stone-700">{label}</label>
         )}
         <input
           ref={ref}
@@ -22,7 +22,7 @@ const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
           maxLength={5}
           pattern="\d{2}:\d{2}"
           className={`px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 ${
-            error ? 'border-red-500' : 'border-gray-300'
+            error ? 'border-red-500' : 'border-stone-300'
           } ${className}`}
           onChange={(e) => {
             // Auto-format: insert colon after 2 digits

@@ -34,7 +34,7 @@ export function MedicalHistory({ medicalHistory }: Props) {
 
   return (
     <div className="card">
-      <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+      <h2 className="text-base font-semibold text-stone-900 dark:text-white mb-4">
         Histórico Médico
       </h2>
 
@@ -48,7 +48,7 @@ export function MedicalHistory({ medicalHistory }: Props) {
               'px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px',
               tab === t.key
                 ? 'border-primary text-primary'
-                : 'border-transparent text-gray-500 hover:text-gray-700',
+                : 'border-transparent text-stone-500 hover:text-stone-700',
             )}
           >
             {t.icon} {t.label}
@@ -63,7 +63,7 @@ export function MedicalHistory({ medicalHistory }: Props) {
       {tab === 'allergies' && (
         <div className="space-y-2">
           {!medicalHistory?.allergies?.length ? (
-            <p className="text-sm text-gray-400">Nenhuma alergia registrada</p>
+            <p className="text-sm text-stone-400">Nenhuma alergia registrada</p>
           ) : (
             medicalHistory.allergies.map((a, i) => (
               <div key={a.id ?? i} className="flex items-start gap-3 p-3 border rounded-lg">
@@ -76,7 +76,7 @@ export function MedicalHistory({ medicalHistory }: Props) {
                     </span>
                   </div>
                   {a.reaction && (
-                    <p className="text-xs text-gray-500 mt-1">Reação: {a.reaction}</p>
+                    <p className="text-xs text-stone-500 mt-1">Reação: {a.reaction}</p>
                   )}
                 </div>
               </div>
@@ -89,7 +89,7 @@ export function MedicalHistory({ medicalHistory }: Props) {
       {tab === 'conditions' && (
         <div className="space-y-2">
           {!medicalHistory?.conditions?.length ? (
-            <p className="text-sm text-gray-400">Nenhuma condição registrada</p>
+            <p className="text-sm text-stone-400">Nenhuma condição registrada</p>
           ) : (
             medicalHistory.conditions.map((c, i) => (
               <div key={c.id ?? i} className="p-3 border rounded-lg">
@@ -100,12 +100,12 @@ export function MedicalHistory({ medicalHistory }: Props) {
                   </span>
                 </div>
                 {c.diagnosedDate && (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-stone-500">
                     Diagnosticado em: {formatDate(c.diagnosedDate)}
                   </p>
                 )}
                 {c.treatment && (
-                  <p className="text-xs text-gray-600 mt-1">Tratamento: {c.treatment}</p>
+                  <p className="text-xs text-stone-600 mt-1">Tratamento: {c.treatment}</p>
                 )}
               </div>
             ))
@@ -117,22 +117,22 @@ export function MedicalHistory({ medicalHistory }: Props) {
       {tab === 'surgeries' && (
         <div className="space-y-2">
           {!medicalHistory?.surgeries?.length ? (
-            <p className="text-sm text-gray-400">Nenhuma cirurgia registrada</p>
+            <p className="text-sm text-stone-400">Nenhuma cirurgia registrada</p>
           ) : (
             medicalHistory.surgeries.map((s, i) => (
               <div key={s.id ?? i} className="p-3 border rounded-lg">
                 <p className="font-medium text-sm">{s.name}</p>
                 {s.date && (
-                  <p className="text-xs text-gray-500 mt-1">Data: {formatDate(s.date)}</p>
+                  <p className="text-xs text-stone-500 mt-1">Data: {formatDate(s.date)}</p>
                 )}
                 {s.hospital && (
-                  <p className="text-xs text-gray-500">Hospital: {s.hospital}</p>
+                  <p className="text-xs text-stone-500">Hospital: {s.hospital}</p>
                 )}
                 {s.surgeon && (
-                  <p className="text-xs text-gray-500">Cirurgião: {s.surgeon}</p>
+                  <p className="text-xs text-stone-500">Cirurgião: {s.surgeon}</p>
                 )}
                 {s.complications && (
-                  <p className="text-xs text-gray-600 mt-1">Complicações: {s.complications}</p>
+                  <p className="text-xs text-stone-600 mt-1">Complicações: {s.complications}</p>
                 )}
               </div>
             ))
@@ -144,30 +144,30 @@ export function MedicalHistory({ medicalHistory }: Props) {
       {tab === 'checkup' && (
         <div>
           {!medicalHistory?.lastCheckup ? (
-            <p className="text-sm text-gray-400">Nenhuma consulta registrada</p>
+            <p className="text-sm text-stone-400">Nenhuma consulta registrada</p>
           ) : (
             <div className="p-3 border rounded-lg space-y-2">
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-gray-500 text-xs">Data</p>
+                  <p className="text-stone-500 text-xs">Data</p>
                   <p className="font-medium">{formatDate(medicalHistory.lastCheckup.date)}</p>
                 </div>
                 {medicalHistory.lastCheckup.doctor && (
                   <div>
-                    <p className="text-gray-500 text-xs">Médico</p>
+                    <p className="text-stone-500 text-xs">Médico</p>
                     <p className="font-medium">{medicalHistory.lastCheckup.doctor}</p>
                   </div>
                 )}
                 {medicalHistory.lastCheckup.clinic && (
                   <div>
-                    <p className="text-gray-500 text-xs">Clínica</p>
+                    <p className="text-stone-500 text-xs">Clínica</p>
                     <p className="font-medium">{medicalHistory.lastCheckup.clinic}</p>
                   </div>
                 )}
               </div>
               {medicalHistory.lastCheckup.findings && (
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Achados</p>
+                  <p className="text-stone-500 text-xs mb-1">Achados</p>
                   <p className="text-sm">{medicalHistory.lastCheckup.findings}</p>
                 </div>
               )}

@@ -24,16 +24,16 @@ export default function NFEGenerator({ record, onClose }: Props) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
         <div className="flex items-start justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Gerar NF-e</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+          <h2 className="text-lg font-bold text-stone-900">Gerar NF-e</h2>
+          <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-xl leading-none">×</button>
         </div>
 
         {done ? (
           <div className="space-y-3">
             <div className="bg-green-50 border border-green-300 rounded-lg p-4 space-y-1 text-sm">
               <p className="font-bold text-green-800">NF-e gerada com sucesso!</p>
-              <p className="text-gray-700">Número: <span className="font-mono">{done.nfe_number}</span></p>
-              <p className="text-gray-500">
+              <p className="text-stone-700">Número: <span className="font-mono">{done.nfe_number}</span></p>
+              <p className="text-stone-500">
                 Emitida em: {new Date(done.nfe_issued_at).toLocaleString('pt-BR')}
               </p>
             </div>
@@ -41,13 +41,13 @@ export default function NFEGenerator({ record, onClose }: Props) {
           </div>
         ) : (
           <>
-            <div className="bg-gray-50 rounded-lg p-3 text-sm space-y-1">
+            <div className="bg-stone-50 rounded-lg p-3 text-sm space-y-1">
               <p className="font-semibold">{record.description}</p>
-              <p className="text-gray-500">{record.invoiceNumber}</p>
+              <p className="text-stone-500">{record.invoiceNumber}</p>
               <p className="font-bold text-lg">{formatCurrency(record.amount)}</p>
             </div>
 
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-stone-600">
               Confirme para emitir a Nota Fiscal de Serviço para esta cobrança.
             </p>
 

@@ -16,10 +16,10 @@ export default function ResidentFinancialPage() {
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
             {data?.resident.name ?? 'Carregando...'}
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Histórico financeiro</p>
+          <p className="text-sm text-stone-500 mt-1">Histórico financeiro</p>
         </div>
         <div className="flex gap-2">
           <Link href="/financial/residents" className="btn-secondary text-sm">← Voltar</Link>
@@ -48,13 +48,13 @@ export default function ResidentFinancialPage() {
 
       {/* Period filter */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-600">Período:</span>
+        <span className="text-sm text-stone-600">Período:</span>
         {[3, 6, 12].map((m) => (
           <button
             key={m}
             onClick={() => setMonths(m)}
             className={`px-3 py-1.5 text-sm rounded-full ${
-              months === m ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              months === m ? 'bg-stone-900 text-white' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
             {m} meses
@@ -63,7 +63,7 @@ export default function ResidentFinancialPage() {
       </div>
 
       {isLoading ? (
-        <div className="card text-center py-12 text-gray-400">Carregando...</div>
+        <div className="card text-center py-12 text-stone-400">Carregando...</div>
       ) : data ? (
         <FinancialHistory records={data.records} residentName={data.resident.name} />
       ) : null}

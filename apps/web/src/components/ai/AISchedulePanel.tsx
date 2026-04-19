@@ -40,7 +40,7 @@ function ScoreBar({ value, max = 100 }: { value: number; max?: number }) {
   const color =
     pct >= 70 ? 'bg-green-500' : pct >= 40 ? 'bg-yellow-500' : 'bg-red-500';
   return (
-    <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-700 w-full overflow-hidden">
+    <div className="h-2 rounded-full bg-stone-200 dark:bg-stone-700 w-full overflow-hidden">
       <div className={`h-2 rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
     </div>
   );
@@ -50,7 +50,7 @@ function RiskBar({ value }: { value: number }) {
   const color =
     value <= 30 ? 'bg-green-500' : value <= 60 ? 'bg-yellow-500' : 'bg-red-500';
   return (
-    <div className="h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 w-full overflow-hidden">
+    <div className="h-1.5 rounded-full bg-stone-200 dark:bg-stone-700 w-full overflow-hidden">
       <div
         className={`h-1.5 rounded-full transition-all ${color}`}
         style={{ width: `${Math.min(100, value)}%` }}
@@ -109,7 +109,7 @@ export default function AISchedulePanel({ month }: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xl">🤖</span>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-base font-semibold text-stone-900 dark:text-white">
             Análise de IA — Escala
           </h2>
         </div>
@@ -134,11 +134,11 @@ export default function AISchedulePanel({ month }: Props) {
         <>
           {/* Conflicts */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-3">
               Conflitos Detectados ({analysis.conflicts.length})
             </h3>
             {analysis.conflicts.length === 0 ? (
-              <p className="text-sm text-gray-400 dark:text-gray-500">
+              <p className="text-sm text-stone-400 dark:text-stone-500">
                 Nenhum conflito encontrado para este mês.
               </p>
             ) : (
@@ -146,7 +146,7 @@ export default function AISchedulePanel({ month }: Props) {
                 {analysis.conflicts.map((conflict) => (
                   <div
                     key={conflict.id}
-                    className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50"
+                    className="flex items-start gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50"
                   >
                     <span
                       className={`text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${SEVERITY_BADGE[conflict.severity]}`}
@@ -154,13 +154,13 @@ export default function AISchedulePanel({ month }: Props) {
                       {SEVERITY_LABELS[conflict.severity]}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                         {conflict.staffName}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                         {conflict.date} · {SHIFT_LABELS[conflict.shift] ?? conflict.shift}
                       </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                      <p className="text-xs text-stone-600 dark:text-stone-300 mt-1">
                         {conflict.description}
                       </p>
                     </div>
@@ -173,22 +173,22 @@ export default function AISchedulePanel({ month }: Props) {
           {/* Absence risks */}
           {analysis.absenceRisks.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-3">
                 Risco de Falta por Funcionário
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-xs text-gray-500 dark:text-gray-400">
+                    <tr className="text-left text-xs text-stone-500 dark:text-stone-400">
                       <th className="pb-2 pr-4 font-medium">Funcionário</th>
                       <th className="pb-2 pr-4 font-medium">Risco</th>
                       <th className="pb-2 font-medium">Indicadores</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tbody className="divide-y divide-stone-100 dark:divide-stone-700">
                     {analysis.absenceRisks.map((risk) => (
                       <tr key={risk.userId}>
-                        <td className="py-2 pr-4 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
+                        <td className="py-2 pr-4 font-medium text-stone-800 dark:text-stone-200 whitespace-nowrap">
                           {risk.staffName}
                         </td>
                         <td className="py-2 pr-4 min-w-[120px]">
@@ -208,7 +208,7 @@ export default function AISchedulePanel({ month }: Props) {
                           </div>
                         </td>
                         <td className="py-2">
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-xs text-stone-500 dark:text-stone-400">
                             {risk.factors.join(', ')}
                           </p>
                         </td>
@@ -223,12 +223,12 @@ export default function AISchedulePanel({ month }: Props) {
           {/* Recommendations */}
           {analysis.recommendations.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
                 Recomendações
               </h3>
               <ul className="space-y-1">
                 {analysis.recommendations.map((rec, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400">
+                  <li key={i} className="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-400">
                     <span className="text-blue-500 mt-0.5 shrink-0">•</span>
                     {rec}
                   </li>
@@ -238,14 +238,14 @@ export default function AISchedulePanel({ month }: Props) {
           )}
 
           {/* Divider */}
-          <hr className="border-gray-200 dark:border-gray-700" />
+          <hr className="border-stone-200 dark:border-stone-700" />
         </>
       )}
 
       {/* Suggest schedule */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
             Sugestão de Escala por IA
           </h3>
           <button
@@ -291,26 +291,26 @@ export default function AISchedulePanel({ month }: Props) {
             </div>
 
             {/* Assignments table */}
-            <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="overflow-x-auto rounded-lg border border-stone-200 dark:border-stone-700">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 dark:bg-gray-800">
-                  <tr className="text-left text-xs text-gray-500 dark:text-gray-400">
+                <thead className="bg-stone-50 dark:bg-stone-800">
+                  <tr className="text-left text-xs text-stone-500 dark:text-stone-400">
                     <th className="px-3 py-2 font-medium">Data</th>
                     <th className="px-3 py-2 font-medium">Turno</th>
                     <th className="px-3 py-2 font-medium">Funcionário</th>
                     <th className="px-3 py-2 font-medium text-right">Confiança</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                <tbody className="divide-y divide-stone-100 dark:divide-stone-700">
                   {activeSuggestion.assignments.map((a, i) => (
-                    <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                      <td className="px-3 py-2 text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                    <tr key={i} className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                      <td className="px-3 py-2 text-stone-700 dark:text-stone-300 whitespace-nowrap">
                         {a.date}
                       </td>
-                      <td className="px-3 py-2 text-gray-600 dark:text-gray-400">
+                      <td className="px-3 py-2 text-stone-600 dark:text-stone-400">
                         {SHIFT_LABELS[a.shift] ?? a.shift}
                       </td>
-                      <td className="px-3 py-2 font-medium text-gray-800 dark:text-gray-200">
+                      <td className="px-3 py-2 font-medium text-stone-800 dark:text-stone-200">
                         {a.staffName}
                       </td>
                       <td className="px-3 py-2 text-right">
@@ -353,7 +353,7 @@ export default function AISchedulePanel({ month }: Props) {
         )}
 
         {!activeSuggestion && !suggesting && (
-          <p className="text-sm text-gray-400 dark:text-gray-500">
+          <p className="text-sm text-stone-400 dark:text-stone-500">
             Clique em &quot;Gerar Sugestão&quot; para que a IA proponha uma escala otimizada para o mês.
           </p>
         )}

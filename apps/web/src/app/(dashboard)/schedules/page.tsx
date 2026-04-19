@@ -35,8 +35,8 @@ export default function SchedulesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Escala de Trabalho</h1>
-          <p className="text-sm text-gray-500 mt-1 capitalize">{formatMonthLabel(month)}</p>
+          <h1 className="page-title">Escala de Trabalho</h1>
+          <p className="text-sm text-stone-500 mt-1 capitalize">{formatMonthLabel(month)}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -58,19 +58,19 @@ export default function SchedulesPage() {
       <div className="flex items-center gap-3">
         <button
           onClick={() => setMonth((m) => addMonths(m, -1))}
-          className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+          className="p-2 rounded-lg hover:bg-stone-100 text-stone-600"
         >
           ‹
         </button>
         <button
           onClick={() => setMonth(currentMonth)}
-          className="px-3 py-1.5 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700"
+          className="px-3 py-1.5 text-sm rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700"
         >
           Hoje
         </button>
         <button
           onClick={() => setMonth((m) => addMonths(m, 1))}
-          className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+          className="p-2 rounded-lg hover:bg-stone-100 text-stone-600"
         >
           ›
         </button>
@@ -86,7 +86,7 @@ export default function SchedulesPage() {
       {showAI && <AISchedulePanel month={month} />}
 
       {isLoading ? (
-        <div className="card text-center py-12 text-gray-400">Carregando...</div>
+        <div className="card text-center py-12 text-stone-400">Carregando...</div>
       ) : (
         <>
           <ScheduleStats summary={data?.summary} />

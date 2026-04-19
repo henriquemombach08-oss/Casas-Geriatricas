@@ -26,11 +26,11 @@ export default function ChargeDetailPage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Detalhe da Cobrança</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Detalhe da Cobrança</h1>
         <Link href="/financial" className="btn-secondary text-sm">← Voltar</Link>
       </div>
 
-      <div className="card text-center py-8 text-gray-500 space-y-3">
+      <div className="card text-center py-8 text-stone-500 space-y-3">
         <p className="text-sm">ID: <span className="font-mono text-xs">{id}</span></p>
         <p className="text-sm">Para ver os detalhes completos, acesse o histórico pelo residente.</p>
         <div className="flex gap-3 justify-center pt-2">

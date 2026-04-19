@@ -17,25 +17,25 @@ function MedicationRow({ med }: { med: Medication }) {
   return (
     <Link
       href={`/medications/${med.id}`}
-      className="flex items-center justify-between p-4 hover:bg-gray-50 transition group"
+      className="flex items-center justify-between p-4 hover:bg-stone-50 transition group"
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-gray-900">{med.name}</span>
+          <span className="font-semibold text-stone-900">{med.name}</span>
           {med.activeIngredient && (
-            <span className="text-sm text-gray-500">({med.activeIngredient})</span>
+            <span className="text-sm text-stone-500">({med.activeIngredient})</span>
           )}
           <span
             className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
               med.status === 'active'
                 ? 'bg-green-100 text-green-700'
-                : 'bg-gray-100 text-gray-600'
+                : 'bg-stone-100 text-stone-600'
             }`}
           >
             {med.status === 'active' ? 'Ativo' : 'Inativo'}
           </span>
         </div>
-        <div className="flex flex-wrap gap-3 mt-1 text-sm text-gray-500">
+        <div className="flex flex-wrap gap-3 mt-1 text-sm text-stone-500">
           {med.dosage && (
             <span>
               {med.dosage}
@@ -48,7 +48,7 @@ function MedicationRow({ med }: { med: Medication }) {
           </span>
         </div>
       </div>
-      <span className="text-gray-400 group-hover:text-gray-600 text-lg">›</span>
+      <span className="text-stone-400 group-hover:text-stone-600 text-lg">›</span>
     </Link>
   );
 }
@@ -94,7 +94,7 @@ function MedicationsContent() {
   return (
     <div className="p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Prescrições</h1>
+        <h1 className="text-2xl font-bold text-stone-900">Prescrições</h1>
         <div className="flex gap-2">
           <Link
             href="/medications/schedule"
@@ -105,7 +105,7 @@ function MedicationsContent() {
           {residentId && (
             <Link
               href={`/medications/new?residentId=${residentId}`}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 transition"
+              className="px-4 py-2 border border-stone-300 text-stone-700 rounded-lg text-sm font-semibold hover:bg-stone-50 transition"
             >
               + Nova prescrição
             </Link>
@@ -114,7 +114,7 @@ function MedicationsContent() {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Residente</label>
+        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Residente</label>
         <ResidentPicker currentId={residentId} />
       </div>
 
@@ -126,7 +126,7 @@ function MedicationsContent() {
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition ${
                 statusFilter === 'active'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
               Ativos
@@ -135,8 +135,8 @@ function MedicationsContent() {
               onClick={() => setStatus('inactive')}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition ${
                 statusFilter === 'inactive'
-                  ? 'bg-gray-700 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-stone-700 text-white'
+                  : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
               Descontinuados
@@ -145,9 +145,9 @@ function MedicationsContent() {
 
           <div className="bg-white border rounded-xl overflow-hidden">
             {isLoading ? (
-              <div className="text-center py-12 text-gray-400">Carregando...</div>
+              <div className="text-center py-12 text-stone-400">Carregando...</div>
             ) : !medications || medications.length === 0 ? (
-              <div className="text-center py-12 text-gray-400">
+              <div className="text-center py-12 text-stone-400">
                 <p>Nenhuma prescrição {statusFilter === 'active' ? 'ativa' : 'descontinuada'}.</p>
                 {statusFilter === 'active' && (
                   <Link

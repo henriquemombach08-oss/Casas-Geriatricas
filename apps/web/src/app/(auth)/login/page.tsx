@@ -32,33 +32,33 @@ export default function LoginPage() {
       await login(values.email, values.password);
       router.push('/dashboard');
     } catch {
-      toast.error('Email ou senha incorretos');
+      toast.error('Email ou senha incorretos. Tente de novo.');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950 px-4">
+      <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white text-2xl font-bold mb-4">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white font-bold text-lg mb-5 shadow-md">
             CG
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">CasaGeri</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Sistema de Gerenciamento de Casas Geriátricas
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-50">CasaGeri</h1>
+          <p className="text-sm text-stone-500 mt-1">
+            Gestão de casas geriátricas
           </p>
         </div>
 
-        {/* Form */}
+        {/* Card */}
         <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          <h2 className="text-base font-semibold text-stone-800 dark:text-stone-100 mb-6">
             Entrar na conta
           </h2>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <label className="label" htmlFor="email">Email</label>
               <input
@@ -70,7 +70,7 @@ export default function LoginPage() {
                 {...register('email')}
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+                <p className="mt-1.5 text-xs text-red-500">{errors.email.message}</p>
               )}
             </div>
 
@@ -87,8 +87,8 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(v => !v)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600 transition-colors"
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                 >
                   {showPassword ? (
@@ -104,14 +104,14 @@ export default function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+                <p className="mt-1.5 text-xs text-red-500">{errors.password.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-2"
+              className="btn-primary w-full mt-2 py-2.5"
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </button>

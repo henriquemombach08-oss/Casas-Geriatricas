@@ -30,34 +30,32 @@ export function Pagination({ page, pages, total, limit = 20, onPageChange }: Pro
 
   return (
     <div className="flex items-center justify-between mt-4">
-      <p className="text-sm text-gray-500">
-        Mostrando <span className="font-medium">{start}–{end}</span> de{' '}
-        <span className="font-medium">{total}</span> resultados
+      <p className="text-sm text-stone-500">
+        Mostrando <span className="font-medium text-stone-700">{start}–{end}</span> de{' '}
+        <span className="font-medium text-stone-700">{total}</span>
       </p>
 
       <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
-          className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1.5 text-sm rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Anterior
         </button>
 
         {getPages().map((p, i) =>
           p === '...' ? (
-            <span key={`ellipsis-${i}`} className="px-2 text-gray-400">
-              ...
-            </span>
+            <span key={`ellipsis-${i}`} className="px-2 text-stone-400">…</span>
           ) : (
             <button
               key={p}
               onClick={() => onPageChange(p)}
               className={cn(
-                'w-9 h-9 text-sm rounded-lg border transition-colors',
+                'w-9 h-9 text-sm rounded-xl border transition-colors',
                 p === page
-                  ? 'bg-primary text-white border-primary'
-                  : 'border-gray-300 hover:bg-gray-50',
+                  ? 'bg-primary text-white border-primary font-semibold'
+                  : 'border-stone-200 text-stone-600 hover:bg-stone-50',
               )}
             >
               {p}
@@ -68,7 +66,7 @@ export function Pagination({ page, pages, total, limit = 20, onPageChange }: Pro
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page === pages}
-          className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1.5 text-sm rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Próximo
         </button>

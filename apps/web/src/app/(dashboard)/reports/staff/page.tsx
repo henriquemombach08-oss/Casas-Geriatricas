@@ -46,8 +46,8 @@ export default function StaffReportPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Relatório de Pessoal</h1>
-          <p className="mt-1 text-sm text-gray-500">Escalas, horas trabalhadas e desempenho</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Relatório de Pessoal</h1>
+          <p className="mt-1 text-sm text-stone-500">Escalas, horas trabalhadas e desempenho</p>
         </div>
         <ExportButtons
           label="Ponto"
@@ -59,20 +59,20 @@ export default function StaffReportPage() {
       <FilterBar period={period} onPeriodChange={setPeriod} />
 
       {isLoading ? (
-        <div className="h-32 animate-pulse rounded-lg bg-gray-100" />
+        <div className="h-32 animate-pulse rounded-lg bg-stone-100" />
       ) : (
         <MetricsGrid metrics={metrics} cols={3} />
       )}
 
       {dash && dash.by_role.length > 0 && (
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <h2 className="mb-4 text-base font-semibold text-gray-800">Por Função</h2>
+        <div className="rounded-xl border border-stone-200 bg-white p-5">
+          <h2 className="mb-4 text-base font-semibold text-stone-800">Por Função</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {dash.by_role.map((r) => (
-              <div key={r.role} className="rounded-lg bg-gray-50 p-3">
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{r.role}</p>
-                <p className="mt-1 text-lg font-bold text-gray-800">{r.count}</p>
-                <p className="text-xs text-gray-500">{r.utilization_rate}% utilização</p>
+              <div key={r.role} className="rounded-lg bg-stone-50 p-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-stone-500">{r.role}</p>
+                <p className="mt-1 text-lg font-bold text-stone-800">{r.count}</p>
+                <p className="text-xs text-stone-500">{r.utilization_rate}% utilização</p>
               </div>
             ))}
           </div>
@@ -80,8 +80,8 @@ export default function StaffReportPage() {
       )}
 
       {dash && dash.individual_staff.length > 0 && (
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <h2 className="mb-4 text-base font-semibold text-gray-800">Desempenho Individual</h2>
+        <div className="rounded-xl border border-stone-200 bg-white p-5">
+          <h2 className="mb-4 text-base font-semibold text-stone-800">Desempenho Individual</h2>
           <TableReport
             columns={[
               { key: 'name', label: 'Funcionário' },

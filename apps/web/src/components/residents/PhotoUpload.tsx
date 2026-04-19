@@ -22,13 +22,13 @@ export function PhotoUpload({ residentId, currentPhotoUrl, name }: Props) {
   return (
     <div className="flex flex-col items-center gap-3">
       <div
-        className="relative w-32 h-32 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 cursor-pointer group"
+        className="relative w-32 h-32 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-700 cursor-pointer group"
         onClick={() => fileRef.current?.click()}
       >
         {currentPhotoUrl ? (
           <Image src={currentPhotoUrl} alt={name} fill className="object-cover" sizes="128px" />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+          <div className="w-full h-full flex flex-col items-center justify-center text-stone-400">
             <span className="text-3xl">👤</span>
             <span className="text-xs mt-1">Sem foto</span>
           </div>
@@ -49,7 +49,7 @@ export function PhotoUpload({ residentId, currentPhotoUrl, name }: Props) {
         disabled={isPending}
       />
 
-      <p className="text-xs text-gray-400">JPEG, PNG • Máx 5MB</p>
+      <p className="text-xs text-stone-400">JPEG, PNG • Máx 5MB</p>
     </div>
   );
 }

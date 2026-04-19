@@ -17,13 +17,13 @@ export default function EditResidentPage({ params }: Props) {
   const { mutate, isPending } = useUpdateResident(id);
 
   if (isLoading) {
-    return <div className="card text-center py-16 text-gray-400">Carregando...</div>;
+    return <div className="card text-center py-16 text-stone-400">Carregando...</div>;
   }
 
   if (!resident) {
     return (
       <div className="card text-center py-16">
-        <p className="text-gray-500">Residente não encontrado</p>
+        <p className="text-stone-500">Residente não encontrado</p>
         <Link href="/residents" className="text-primary hover:underline text-sm mt-2 block">
           Voltar para lista
         </Link>
@@ -44,15 +44,15 @@ export default function EditResidentPage({ params }: Props) {
       <div className="flex items-center gap-4">
         <Link
           href={`/residents/${id}`}
-          className="text-gray-400 hover:text-gray-600 text-2xl"
+          className="text-stone-400 hover:text-stone-600 text-2xl"
         >
           ←
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
             Editar: {resident.name}
           </h1>
-          <p className="text-sm text-gray-500">CPF: {resident.cpf}</p>
+          <p className="text-sm text-stone-500">CPF: {resident.cpf}</p>
         </div>
       </div>
 

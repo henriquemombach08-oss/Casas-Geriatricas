@@ -72,7 +72,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
     <div className="space-y-4">
       {/* Residente */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Residente *</label>
+        <label className="block text-sm font-medium text-stone-700 mb-1">Residente *</label>
         <select value={form.resident_id} onChange={(e) => set('resident_id', e.target.value)} className="input w-full">
           <option value="">Selecionar residente...</option>
           {residentsData?.residents.map((r) => (
@@ -84,7 +84,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
       <div className="grid grid-cols-2 gap-4">
         {/* Tipo */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Tipo *</label>
           <select value={form.type} onChange={(e) => set('type', e.target.value as FinancialType)} className="input w-full">
             {TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
           </select>
@@ -92,7 +92,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
 
         {/* Categoria */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Categoria</label>
           <select value={form.category} onChange={(e) => set('category', e.target.value as FinancialCategory)} className="input w-full">
             {CATEGORIES.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
           </select>
@@ -101,7 +101,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
 
       {/* Descrição */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Descrição *</label>
+        <label className="block text-sm font-medium text-stone-700 mb-1">Descrição *</label>
         <input
           type="text"
           value={form.description}
@@ -114,7 +114,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
       <div className="grid grid-cols-2 gap-4">
         {/* Valor */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$) *</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Valor (R$) *</label>
           <input
             type="number"
             min="0"
@@ -127,7 +127,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
 
         {/* Data emissão */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Data emissão *</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Data emissão *</label>
           <input
             type="date"
             value={form.issue_date}
@@ -141,7 +141,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
         {/* Vencimento */}
         {!isPayment && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vencimento</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Vencimento</label>
             <input
               type="date"
               value={form.due_date ?? ''}
@@ -154,7 +154,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
         {/* Data pagamento */}
         {isPayment && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Data pagamento</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Data pagamento</label>
             <input
               type="date"
               value={form.paid_date ?? ''}
@@ -166,7 +166,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
 
         {/* Mês referência */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Mês referência</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Mês referência</label>
           <input
             type="month"
             value={form.reference_month?.slice(0, 7) ?? ''}
@@ -179,7 +179,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
       {/* Forma de pagamento */}
       {isPayment && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Forma de pagamento</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Forma de pagamento</label>
           <select
             value={form.payment_method ?? ''}
             onChange={(e) => set('payment_method', e.target.value || undefined)}
@@ -193,7 +193,7 @@ export default function ChargeForm({ onSuccess, onCancel }: Props) {
 
       {/* Notas */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+        <label className="block text-sm font-medium text-stone-700 mb-1">Observações</label>
         <textarea
           value={form.notes ?? ''}
           onChange={(e) => set('notes', e.target.value)}

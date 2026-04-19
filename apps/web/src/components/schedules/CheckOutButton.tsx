@@ -30,8 +30,8 @@ export default function CheckOutButton({ scheduleId, userName, disabled }: Props
       {showConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">Confirmar Check-out</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg font-bold text-stone-900">Confirmar Check-out</h3>
+            <p className="text-stone-600">
               Registrar saída de <strong>{userName}</strong> às{' '}
               <strong>{new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</strong>?
             </p>
@@ -41,7 +41,7 @@ export default function CheckOutButton({ scheduleId, userName, disabled }: Props
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                className="flex-1 px-4 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300"
               >
                 Cancelar
               </button>

@@ -21,14 +21,14 @@ export default function EditMedicationPage() {
   }
 
   if (!data) {
-    return <div className="p-6 text-center text-gray-500">Medicamento não encontrado.</div>;
+    return <div className="p-6 text-center text-stone-500">Medicamento não encontrado.</div>;
   }
 
   const { medication } = data;
 
   if (medication.status === 'inactive') {
     return (
-      <div className="p-6 text-center text-gray-500">
+      <div className="p-6 text-center text-stone-500">
         Medicamento inativo não pode ser editado.
       </div>
     );
@@ -45,12 +45,12 @@ export default function EditMedicationPage() {
       <div className="mb-6">
         <button
           onClick={() => router.back()}
-          className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-2"
+          className="text-sm text-stone-500 hover:text-stone-700 flex items-center gap-1 mb-2"
         >
           ← Voltar
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">Editar Prescrição</h1>
-        <p className="text-gray-500 mt-1 text-sm">
+        <h1 className="text-2xl font-bold text-stone-900">Editar Prescrição</h1>
+        <p className="text-stone-500 mt-1 text-sm">
           {medication.name} — informe o motivo da alteração.
         </p>
       </div>

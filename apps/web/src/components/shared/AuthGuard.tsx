@@ -18,10 +18,10 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!checked) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex h-screen items-center justify-center bg-stone-50 dark:bg-stone-900">
         <div className="text-center">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
-          <p className="mt-3 text-sm text-gray-500">Verificando acesso...</p>
+          <p className="mt-3 text-sm text-stone-500">Verificando acesso...</p>
         </div>
       </div>
     );

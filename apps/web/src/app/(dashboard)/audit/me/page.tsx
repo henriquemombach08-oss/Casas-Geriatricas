@@ -47,37 +47,37 @@ export default function MyAuditPage() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Minhas Atividades</h1>
-        <p className="text-sm text-gray-500 mt-1">Histórico das suas ações no sistema</p>
+        <h1 className="text-2xl font-bold text-stone-900">Minhas Atividades</h1>
+        <p className="text-sm text-stone-500 mt-1">Histórico das suas ações no sistema</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-stone-50 border-b border-stone-200">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Data/Hora</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Ação</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Tipo</th>
-              <th className="text-center px-4 py-3 font-medium text-gray-600">PIN usado</th>
+              <th className="text-left px-4 py-3 font-medium text-stone-600">Data/Hora</th>
+              <th className="text-left px-4 py-3 font-medium text-stone-600">Ação</th>
+              <th className="text-left px-4 py-3 font-medium text-stone-600">Tipo</th>
+              <th className="text-center px-4 py-3 font-medium text-stone-600">PIN usado</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-stone-100">
             {loading ? (
-              <tr><td colSpan={4} className="text-center py-12 text-gray-400">Carregando...</td></tr>
+              <tr><td colSpan={4} className="text-center py-12 text-stone-400">Carregando...</td></tr>
             ) : logs.length === 0 ? (
-              <tr><td colSpan={4} className="text-center py-12 text-gray-400">Nenhuma atividade registrada</td></tr>
+              <tr><td colSpan={4} className="text-center py-12 text-stone-400">Nenhuma atividade registrada</td></tr>
             ) : (
               logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                <tr key={log.id} className="hover:bg-stone-50 transition-colors">
+                  <td className="px-4 py-3 text-stone-600 whitespace-nowrap">
                     {new Date(log.createdAt).toLocaleString('pt-BR')}
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">
+                  <td className="px-4 py-3 font-medium text-stone-900">
                     {ACTION_LABELS[log.action] ?? log.action}
                   </td>
                   <td className="px-4 py-3">
                     {log.entityType && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{log.entityType}</span>
+                      <span className="text-xs bg-stone-100 text-stone-600 px-2 py-1 rounded-full">{log.entityType}</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -86,7 +86,7 @@ export default function MyAuditPage() {
                         ✓ Sim
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-300">—</span>
+                      <span className="text-xs text-stone-300">—</span>
                     )}
                   </td>
                 </tr>
@@ -97,12 +97,12 @@ export default function MyAuditPage() {
       </div>
 
       {total > 20 && (
-        <div className="flex items-center justify-between text-sm text-gray-500">
+        <div className="flex items-center justify-between text-sm text-stone-500">
           <span>{total} registros</span>
           <div className="flex gap-2">
-            <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50">Anterior</button>
+            <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1 rounded-lg border border-stone-200 disabled:opacity-40 hover:bg-stone-50">Anterior</button>
             <span className="px-3 py-1">Página {page}</span>
-            <button disabled={page * 20 >= total} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50">Próxima</button>
+            <button disabled={page * 20 >= total} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 rounded-lg border border-stone-200 disabled:opacity-40 hover:bg-stone-50">Próxima</button>
           </div>
         </div>
       )}

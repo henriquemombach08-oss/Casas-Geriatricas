@@ -28,7 +28,7 @@ export function DocumentList({ residentId, documents }: Props) {
   return (
     <div className="card">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-base font-semibold text-stone-900 dark:text-white">
           Documentos ({documents.length})
         </h2>
         <button
@@ -67,23 +67,23 @@ export function DocumentList({ residentId, documents }: Props) {
 
       <div className="space-y-2">
         {documents.length === 0 ? (
-          <p className="text-sm text-gray-400 py-4 text-center">Nenhum documento enviado</p>
+          <p className="text-sm text-stone-400 py-4 text-center">Nenhum documento enviado</p>
         ) : (
           documents.map((doc) => {
             const status = statusConfig[doc.status] ?? statusConfig['valid']!;
             return (
               <div
                 key={doc.id}
-                className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center gap-3 p-3 border rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
               >
-                <div className="w-9 h-9 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-lg shrink-0">
+                <div className="w-9 h-9 bg-stone-100 dark:bg-stone-700 rounded-lg flex items-center justify-center text-lg shrink-0">
                   {doc.fileType === 'pdf' ? '📄' : '🖼️'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                  <p className="text-sm font-medium text-stone-900 dark:text-white truncate">
                     {doc.name ?? DOC_TYPE_LABELS[doc.type] ?? doc.type}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-stone-500">
                     {DOC_TYPE_LABELS[doc.type] ?? doc.type}
                     {doc.expiresAt && ` • Vence: ${formatDate(doc.expiresAt)}`}
                   </p>

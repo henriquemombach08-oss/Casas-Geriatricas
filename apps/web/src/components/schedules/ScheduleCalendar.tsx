@@ -25,7 +25,7 @@ export default function ScheduleCalendar({ schedules, month }: Props) {
 
   const getDayStyle = (day: number) => {
     const daySchedules = getSchedulesForDay(day);
-    if (daySchedules.length === 0) return 'bg-gray-50 text-gray-400';
+    if (daySchedules.length === 0) return 'bg-stone-50 text-stone-400';
     const anyNoShow = daySchedules.some((s) => s.status === 'no_show');
     const allDone = daySchedules.every((s) => ['present', 'confirmed'].includes(s.status));
     if (anyNoShow) return 'bg-red-100 border-red-300 text-red-800 font-bold';
@@ -40,7 +40,7 @@ export default function ScheduleCalendar({ schedules, month }: Props) {
       {/* Header */}
       <div className="grid grid-cols-7 mb-2">
         {weekDays.map((d) => (
-          <div key={d} className="text-center text-xs font-semibold text-gray-500 py-2">{d}</div>
+          <div key={d} className="text-center text-xs font-semibold text-stone-500 py-2">{d}</div>
         ))}
       </div>
 
@@ -79,7 +79,7 @@ export default function ScheduleCalendar({ schedules, month }: Props) {
             })}
           </h3>
           {getSchedulesForDay(selectedDay).length === 0 ? (
-            <p className="text-gray-500 text-sm">Nenhuma escala neste dia.</p>
+            <p className="text-stone-500 text-sm">Nenhuma escala neste dia.</p>
           ) : (
             <div className="space-y-3">
               {getSchedulesForDay(selectedDay).map((s) => (

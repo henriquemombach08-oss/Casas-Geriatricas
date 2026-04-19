@@ -14,8 +14,8 @@ export default function FinancialPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Financeiro</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="page-title">Financeiro</h1>
+          <p className="text-sm text-stone-500 mt-1">
             {summary ? `Referência: ${new Date(summary.month + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}` : 'Carregando...'}
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function FinancialPage() {
       </div>
 
       {isLoading && (
-        <div className="card text-center py-12 text-gray-400">Carregando...</div>
+        <div className="card text-center py-12 text-stone-400">Carregando...</div>
       )}
 
       {summary && (
@@ -43,15 +43,15 @@ export default function FinancialPage() {
 
             {/* Top debtors */}
             <div className="card space-y-3">
-              <h2 className="font-bold text-gray-900">Maiores Devedores</h2>
+              <h2 className="font-bold text-stone-900">Maiores Devedores</h2>
               {summary.top_debtors.length === 0 ? (
-                <p className="text-sm text-gray-500 py-4 text-center">Nenhuma inadimplência.</p>
+                <p className="text-sm text-stone-500 py-4 text-center">Nenhuma inadimplência.</p>
               ) : (
                 <div className="space-y-2">
                   {summary.top_debtors.map((d, i) => (
                     <div key={i} className="flex items-center justify-between py-2 border-b last:border-0">
                       <div>
-                        <p className="font-medium text-sm text-gray-900">{d.resident_name}</p>
+                        <p className="font-medium text-sm text-stone-900">{d.resident_name}</p>
                         <p className="text-xs text-red-600">{d.days_overdue} dias atrasado</p>
                       </div>
                       <span className="font-bold text-red-700 text-sm">
@@ -74,10 +74,10 @@ export default function FinancialPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="card flex items-center gap-3 hover:bg-gray-50 transition-colors"
+                className="card flex items-center gap-3 hover:bg-stone-50 transition-colors"
               >
                 <span className="text-2xl">{item.icon}</span>
-                <span className="font-medium text-sm text-gray-700">{item.label}</span>
+                <span className="font-medium text-sm text-stone-700">{item.label}</span>
               </Link>
             ))}
           </div>

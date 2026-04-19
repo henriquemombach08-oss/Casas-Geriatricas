@@ -38,8 +38,8 @@ export default function FinancialHistory({ records, residentName }: Props) {
             onClick={() => setFilter(opt.value)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               filter === opt.value
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-stone-900 text-white'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
             {opt.label}
@@ -48,26 +48,26 @@ export default function FinancialHistory({ records, residentName }: Props) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-gray-500 text-center py-6">Nenhum registro encontrado.</p>
+        <p className="text-sm text-stone-500 text-center py-6">Nenhum registro encontrado.</p>
       ) : (
         <div className="space-y-3">
           {filtered.map((record) => (
             <div
               key={record.id}
               className={`border rounded-xl p-4 space-y-2 ${
-                record.status === 'overdue' ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-white'
+                record.status === 'overdue' ? 'border-red-300 bg-red-50' : 'border-stone-200 bg-white'
               }`}
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm">{record.description}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="font-semibold text-stone-900 text-sm">{record.description}</p>
+                  <p className="text-xs text-stone-500 mt-0.5">
                     {TYPE_LABELS[record.type]} · {CATEGORY_LABELS[record.category]}
                     {record.invoiceNumber && ` · ${record.invoiceNumber}`}
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className={`font-bold ${record.type === 'payment' ? 'text-green-700' : 'text-gray-900'}`}>
+                  <p className={`font-bold ${record.type === 'payment' ? 'text-green-700' : 'text-stone-900'}`}>
                     {record.type === 'payment' ? '+' : ''}{formatCurrency(record.amount)}
                   </p>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${STATUS_COLORS[record.status]}`}>
@@ -76,7 +76,7 @@ export default function FinancialHistory({ records, residentName }: Props) {
                 </div>
               </div>
 
-              <div className="flex gap-4 text-xs text-gray-500 flex-wrap">
+              <div className="flex gap-4 text-xs text-stone-500 flex-wrap">
                 <span>Emissão: {new Date(record.issueDate + 'T00:00:00').toLocaleDateString('pt-BR')}</span>
                 {record.dueDate && (
                   <span>Vencimento: {new Date(record.dueDate + 'T00:00:00').toLocaleDateString('pt-BR')}</span>
@@ -93,7 +93,7 @@ export default function FinancialHistory({ records, residentName }: Props) {
               </div>
 
               {record.nfeNumber && (
-                <p className="text-xs text-gray-500">NF-e: {record.nfeNumber}</p>
+                <p className="text-xs text-stone-500">NF-e: {record.nfeNumber}</p>
               )}
 
               {/* Actions */}

@@ -38,7 +38,7 @@ export default function ResidentDetailPage({ params }: Props) {
 
   if (isLoading) {
     return (
-      <div className="card text-center py-16 text-gray-400">
+      <div className="card text-center py-16 text-stone-400">
         Carregando residente...
       </div>
     );
@@ -47,7 +47,7 @@ export default function ResidentDetailPage({ params }: Props) {
   if (!resident) {
     return (
       <div className="card text-center py-16">
-        <p className="text-gray-500">Residente não encontrado</p>
+        <p className="text-stone-500">Residente não encontrado</p>
         <Link href="/residents" className="text-primary hover:underline text-sm mt-2 block">
           Voltar para lista
         </Link>
@@ -71,8 +71,8 @@ export default function ResidentDetailPage({ params }: Props) {
             name={resident.name}
           />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{resident.name}</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{resident.name}</h1>
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
               CPF: {resident.cpf} • {resident.age} anos
             </p>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -123,7 +123,7 @@ export default function ResidentDetailPage({ params }: Props) {
         <div className="lg:col-span-2 space-y-6">
           {/* Personal info */}
           <div className="card">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-base font-semibold text-stone-900 dark:text-white mb-4">
               Informações Pessoais
             </h2>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -138,7 +138,7 @@ export default function ResidentDetailPage({ params }: Props) {
               ].map(([label, value]) =>
                 value ? (
                   <div key={label}>
-                    <p className="text-gray-500 text-xs">{label}</p>
+                    <p className="text-stone-500 text-xs">{label}</p>
                     <p className="font-medium mt-0.5">{value}</p>
                   </div>
                 ) : null,
@@ -147,7 +147,7 @@ export default function ResidentDetailPage({ params }: Props) {
 
             {(resident.address || resident.city) && (
               <div className="mt-4 pt-4 border-t">
-                <p className="text-gray-500 text-xs mb-1">Endereço</p>
+                <p className="text-stone-500 text-xs mb-1">Endereço</p>
                 <p className="text-sm font-medium">
                   {[
                     resident.address,
@@ -157,14 +157,14 @@ export default function ResidentDetailPage({ params }: Props) {
                     .filter(Boolean)
                     .join(', ')}
                   {resident.city && (
-                    <span className="text-gray-500">
+                    <span className="text-stone-500">
                       {' — '}
                       {resident.city}
                       {resident.state && `/${resident.state}`}
                     </span>
                   )}
                   {resident.zipCode && (
-                    <span className="text-gray-400"> ({resident.zipCode})</span>
+                    <span className="text-stone-400"> ({resident.zipCode})</span>
                   )}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function ResidentDetailPage({ params }: Props) {
 
           {/* Emergency contact */}
           <div className="card">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-base font-semibold text-stone-900 dark:text-white mb-4">
               Contato de Emergência
             </h2>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -185,7 +185,7 @@ export default function ResidentDetailPage({ params }: Props) {
               ].map(([label, value]) =>
                 value ? (
                   <div key={label}>
-                    <p className="text-gray-500 text-xs">{label}</p>
+                    <p className="text-stone-500 text-xs">{label}</p>
                     <p className="font-medium mt-0.5">{value}</p>
                   </div>
                 ) : null,
@@ -202,18 +202,18 @@ export default function ResidentDetailPage({ params }: Props) {
           {/* Notes */}
           {(resident.notes || resident.specialNeeds) && (
             <div className="card">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-base font-semibold text-stone-900 dark:text-white mb-4">
                 Observações
               </h2>
               {resident.notes && (
                 <div className="mb-3">
-                  <p className="text-xs text-gray-500 mb-1">Notas Gerais</p>
+                  <p className="text-xs text-stone-500 mb-1">Notas Gerais</p>
                   <p className="text-sm">{resident.notes}</p>
                 </div>
               )}
               {resident.specialNeeds && (
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Necessidades Especiais</p>
+                  <p className="text-xs text-stone-500 mb-1">Necessidades Especiais</p>
                   <p className="text-sm text-amber-700 bg-amber-50 rounded p-2">
                     {resident.specialNeeds}
                   </p>
@@ -230,25 +230,25 @@ export default function ResidentDetailPage({ params }: Props) {
 
           {/* Quick links */}
           <div className="card">
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+            <h2 className="text-sm font-semibold text-stone-900 dark:text-white mb-3">
               Acesso Rápido
             </h2>
             <div className="space-y-2">
               <Link
                 href={`/medications?residentId=${id}`}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 transition-colors"
+                className="flex items-center gap-2 p-2 rounded-lg hover:bg-stone-50 text-sm text-stone-600 transition-colors"
               >
                 <span>💊</span> Medicamentos
               </Link>
               <Link
                 href={`/visitors?residentId=${id}`}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 transition-colors"
+                className="flex items-center gap-2 p-2 rounded-lg hover:bg-stone-50 text-sm text-stone-600 transition-colors"
               >
                 <span>👥</span> Visitantes
               </Link>
               <Link
                 href={`/financial?residentId=${id}`}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 transition-colors"
+                className="flex items-center gap-2 p-2 rounded-lg hover:bg-stone-50 text-sm text-stone-600 transition-colors"
               >
                 <span>💰</span> Financeiro
               </Link>
@@ -262,7 +262,7 @@ export default function ResidentDetailPage({ params }: Props) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="card w-full max-w-md">
             <h3 className="text-lg font-semibold mb-2">Desativar Residente</h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-stone-500 mb-4">
               O residente será marcado como inativo. Os dados serão preservados.
             </p>
             <div className="mb-4">

@@ -89,7 +89,7 @@ export function DocumentUpload({ residentId, onSuccess }: Props) {
           className="input py-1.5 file:mr-3 file:border-0 file:bg-primary file:text-white file:rounded file:px-2 file:py-1 file:text-xs cursor-pointer"
           required
         />
-        <p className="text-xs text-gray-400 mt-1">PDF, JPEG ou PNG • Máx 10MB</p>
+        <p className="text-xs text-stone-400 mt-1">PDF, JPEG ou PNG • Máx 10MB</p>
       </div>
 
       <button type="submit" disabled={isPending} className="btn-primary">

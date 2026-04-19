@@ -37,7 +37,7 @@ export default function FilterBar({ period, onPeriodChange, showPresets = true }
           className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
             period === p.value
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
           }`}
         >
           {p.label}
@@ -46,7 +46,7 @@ export default function FilterBar({ period, onPeriodChange, showPresets = true }
       <select
         value={/^\d{4}-\d{2}$/.test(period) ? period : ''}
         onChange={(e) => e.target.value && onPeriodChange(e.target.value)}
-        className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none"
+        className="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 focus:border-blue-500 focus:outline-none"
       >
         <option value="">Selecionar mês...</option>
         {recentMonths.map((m) => (

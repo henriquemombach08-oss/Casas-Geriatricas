@@ -38,20 +38,20 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Configurações</h1>
-        <p className="mt-1 text-sm text-gray-500">Preferências da conta</p>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Configurações</h1>
+        <p className="mt-1 text-sm text-stone-500">Preferências da conta</p>
       </div>
 
       {/* Perfil */}
       <div className="card space-y-3">
-        <h2 className="text-base font-semibold text-gray-800 dark:text-white">Meu Perfil</h2>
+        <h2 className="text-base font-semibold text-stone-800 dark:text-white">Meu Perfil</h2>
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white text-xl font-bold">
             {user?.name?.charAt(0).toUpperCase() ?? 'U'}
           </div>
           <div>
-            <p className="font-medium text-gray-900 dark:text-white">{user?.name}</p>
-            <p className="text-sm text-gray-500">{user?.email}</p>
+            <p className="font-medium text-stone-900 dark:text-white">{user?.name}</p>
+            <p className="text-sm text-stone-500">{user?.email}</p>
             <span className="mt-1 inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
               {user?.role}
             </span>
@@ -61,7 +61,7 @@ export default function SettingsPage() {
 
       {/* Alterar senha */}
       <div className="card space-y-4">
-        <h2 className="text-base font-semibold text-gray-800 dark:text-white">Alterar Senha</h2>
+        <h2 className="text-base font-semibold text-stone-800 dark:text-white">Alterar Senha</h2>
         <form onSubmit={handlePasswordChange} className="space-y-3">
           <div>
             <label className="label">Senha atual</label>
@@ -87,8 +87,8 @@ export default function SettingsPage() {
 
       {/* Aparência */}
       <div className="card">
-        <h2 className="mb-3 text-base font-semibold text-gray-800 dark:text-white">Aparência</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="mb-3 text-base font-semibold text-stone-800 dark:text-white">Aparência</h2>
+        <p className="text-sm text-stone-500">
           Use o botão 🌙 / ☀️ na barra superior para alternar entre modo claro e escuro.
           A preferência é salva automaticamente.
         </p>
@@ -96,7 +96,7 @@ export default function SettingsPage() {
 
       {/* Sair */}
       <div className="card">
-        <h2 className="mb-3 text-base font-semibold text-gray-800 dark:text-white">Sessão</h2>
+        <h2 className="mb-3 text-base font-semibold text-stone-800 dark:text-white">Sessão</h2>
         <button onClick={logout} className="btn-danger text-sm">
           Sair da conta
         </button>

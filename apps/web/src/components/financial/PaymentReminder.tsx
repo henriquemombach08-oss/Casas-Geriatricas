@@ -41,23 +41,23 @@ export default function PaymentReminder({ record, residentName, onClose }: Props
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
         <div className="flex items-start justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Enviar Lembrete de Cobrança</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+          <h2 className="text-lg font-bold text-stone-900">Enviar Lembrete de Cobrança</h2>
+          <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-xl leading-none">×</button>
         </div>
 
         {sent ? (
           <div className="space-y-3">
             <div className="bg-green-50 border border-green-300 rounded-lg p-4 text-sm space-y-1">
               <p className="font-bold text-green-800">Lembrete enviado para {residentName}!</p>
-              <p className="text-gray-600">Canais: {sent.join(', ') || '—'}</p>
+              <p className="text-stone-600">Canais: {sent.join(', ') || '—'}</p>
             </div>
             <button onClick={onClose} className="w-full btn-primary">Fechar</button>
           </div>
         ) : (
           <>
-            <div className="bg-gray-50 rounded-lg p-3 text-sm space-y-1">
+            <div className="bg-stone-50 rounded-lg p-3 text-sm space-y-1">
               <p className="font-semibold">{residentName}</p>
-              <p className="text-gray-600">{record.description} — {formatCurrency(record.amount)}</p>
+              <p className="text-stone-600">{record.description} — {formatCurrency(record.amount)}</p>
               {record.dueDate && (
                 <p className="text-red-600 text-xs">
                   Vencimento: {new Date(record.dueDate + 'T00:00:00').toLocaleDateString('pt-BR')}
@@ -66,7 +66,7 @@ export default function PaymentReminder({ record, residentName, onClose }: Props
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Canais de envio:</p>
+              <p className="text-sm font-medium text-stone-700 mb-2">Canais de envio:</p>
               <div className="flex gap-3">
                 {CHANNELS.map((ch) => (
                   <label key={ch.id} className="flex items-center gap-1.5 cursor-pointer">

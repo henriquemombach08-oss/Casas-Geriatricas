@@ -51,15 +51,15 @@ function MedicationCard({ med, onAdminister }: CardProps) {
               className="w-12 h-12 rounded-full object-cover flex-shrink-0"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-              <span className="text-gray-500 text-lg font-bold">
+            <div className="w-12 h-12 rounded-full bg-stone-200 flex items-center justify-center flex-shrink-0">
+              <span className="text-stone-500 text-lg font-bold">
                 {med.resident_name.charAt(0)}
               </span>
             </div>
           )}
           <div className="min-w-0">
-            <p className="font-bold text-gray-900 truncate">{med.resident_name}</p>
-            <p className="text-sm text-gray-600 truncate">{med.medication_name}</p>
+            <p className="font-bold text-stone-900 truncate">{med.resident_name}</p>
+            <p className="text-sm text-stone-600 truncate">{med.medication_name}</p>
           </div>
         </div>
         <span
@@ -139,7 +139,7 @@ export default function ScheduleBoard({ medications, onAdministered }: Props) {
 
       {upcoming.length > 0 && (
         <section>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">
+          <h2 className="text-lg font-bold text-stone-800 mb-4">
             Próximos a administrar
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

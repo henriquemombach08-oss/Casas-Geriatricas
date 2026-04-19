@@ -26,20 +26,20 @@ export default function ScheduleCard({ schedule, showActions = true }: Props) {
   });
 
   return (
-    <div className={`border rounded-lg p-4 space-y-3 ${schedule.status === 'no_show' ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-white'}`}>
+    <div className={`border rounded-lg p-4 space-y-3 ${schedule.status === 'no_show' ? 'border-red-300 bg-red-50' : 'border-stone-200 bg-white'}`}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-semibold text-gray-900">{schedule.user?.name ?? '—'}</p>
-          <p className="text-sm text-gray-500 capitalize">{schedule.user?.role}</p>
+          <p className="font-semibold text-stone-900">{schedule.user?.name ?? '—'}</p>
+          <p className="text-sm text-stone-500 capitalize">{schedule.user?.role}</p>
         </div>
         <ScheduleStatusBadge status={schedule.status} />
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
         <ShiftBadge shift={schedule.shift} />
-        <span className="text-sm text-gray-600">{dateStr}</span>
+        <span className="text-sm text-stone-600">{dateStr}</span>
         {schedule.startTime && schedule.endTime && (
-          <span className="text-sm text-gray-500">{schedule.startTime} – {schedule.endTime}</span>
+          <span className="text-sm text-stone-500">{schedule.startTime} – {schedule.endTime}</span>
         )}
         {schedule.is_late && (
           <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Chegou atrasado</span>
@@ -52,7 +52,7 @@ export default function ScheduleCard({ schedule, showActions = true }: Props) {
       </div>
 
       {schedule.notes && (
-        <p className="text-sm text-gray-600 italic">{schedule.notes}</p>
+        <p className="text-sm text-stone-600 italic">{schedule.notes}</p>
       )}
 
       {showActions && (
@@ -87,7 +87,7 @@ export default function ScheduleCard({ schedule, showActions = true }: Props) {
           {['scheduled', 'confirmed'].includes(schedule.status) && (
             <button
               onClick={() => setShowAbsenceForm(!showAbsenceForm)}
-              className="px-3 py-1.5 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+              className="px-3 py-1.5 text-sm bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300"
             >
               Registrar ausência
             </button>
@@ -96,7 +96,7 @@ export default function ScheduleCard({ schedule, showActions = true }: Props) {
       )}
 
       {showAbsenceForm && (
-        <div className="mt-2 p-3 bg-gray-50 rounded-lg space-y-2">
+        <div className="mt-2 p-3 bg-stone-50 rounded-lg space-y-2">
           <textarea
             value={absenceReason}
             onChange={(e) => setAbsenceReason(e.target.value)}
@@ -123,7 +123,7 @@ export default function ScheduleCard({ schedule, showActions = true }: Props) {
                 setShowAbsenceForm(false);
               }}
               disabled={absence.isPending}
-              className="px-3 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
+              className="px-3 py-1.5 text-sm bg-stone-600 text-white rounded hover:bg-stone-700 disabled:opacity-50"
             >
               Ausência justificada
             </button>
