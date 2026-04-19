@@ -688,11 +688,17 @@ async function main() {
 
   console.log('✅ Registros financeiros criados');
 
-  // ── Work Schedules ───────────────────────────────────────────────────────────
+  // ── Work Schedules (batch createMany for speed) ──────────────────────────────
 
   const allStaff = await prisma.user.findMany({ where: { houseId: HOUSE_ID, active: true } });
   const shifts = ['morning', 'afternoon', 'night'] as const;
 
+  // Delete existing seed schedules to avoid duplicates, then recreate in batch
+  await prisma.workSchedule.deleteMany({
+    where: { houseId: HOUSE_ID },
+  });
+
+  const scheduleRows = [];
   for (let dayOffset = -14; dayOffset <= 21; dayOffset++) {
     const d = new Date();
     d.setDate(d.getDate() + dayOffset);
@@ -701,27 +707,19 @@ async function main() {
     for (let i = 0; i < allStaff.length; i++) {
       const user = allStaff[i]!;
       const shift = shifts[(i + Math.abs(dayOffset)) % shifts.length]!;
-
-      const existing = await prisma.workSchedule.findFirst({
-        where: { userId: user.id, scheduleDate: new Date(dateStr), houseId: HOUSE_ID },
+      scheduleRows.push({
+        houseId: HOUSE_ID,
+        userId: user.id,
+        scheduleDate: new Date(dateStr),
+        shift,
+        status: (dayOffset <= 0 ? 'present' : 'scheduled') as never,
+        createdBy: admin.id,
       });
-
-      if (!existing) {
-        await prisma.workSchedule.create({
-          data: {
-            houseId: HOUSE_ID,
-            userId: user.id,
-            scheduleDate: new Date(dateStr),
-            shift,
-            status: dayOffset < 0 ? 'present' : dayOffset === 0 ? 'present' : 'scheduled',
-            createdBy: admin.id,
-          },
-        });
-      }
     }
   }
 
-  console.log('✅ Escalas criadas');
+  await prisma.workSchedule.createMany({ data: scheduleRows, skipDuplicates: true });
+  console.log(`✅ Escalas criadas (${scheduleRows.length} registros)`);
 
   // ── Visitors ─────────────────────────────────────────────────────────────────
 
