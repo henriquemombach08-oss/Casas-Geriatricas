@@ -131,11 +131,11 @@ export default function MedicationsScreen() {
       setSelectedMed(null);
       setLogNotes('');
       setLogStatus('administered');
-      Alert.alert('Sucesso', 'Administração registrada.');
+      Alert.alert('Tudo certo!', 'Administração registrada com sucesso.');
     },
     onError: (err: unknown) => {
       const error = err as { response?: { data?: { message?: string } } };
-      Alert.alert('Erro', error?.response?.data?.message ?? 'Erro ao registrar.');
+      Alert.alert('Ops', error?.response?.data?.message ?? 'Não foi possível registrar a administração. Tente de novo.');
     },
   });
 

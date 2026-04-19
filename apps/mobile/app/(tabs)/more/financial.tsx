@@ -150,7 +150,7 @@ export default function FinancialScreen() {
     },
     onError: (err: unknown) => {
       const error = err as { response?: { data?: { message?: string } } };
-      Alert.alert('Erro', error?.response?.data?.message ?? 'Erro ao criar cobrança.');
+      Alert.alert('Ops, algo deu errado', error?.response?.data?.message ?? 'Não foi possível salvar o registro financeiro. Verifique os dados e tente de novo.');
     },
   });
 
@@ -164,15 +164,15 @@ export default function FinancialScreen() {
 
   function handleSubmit() {
     if (!selectedResidentId) {
-      Alert.alert('Atenção', 'Selecione um residente.');
+      Alert.alert('Faltou uma coisa', 'Selecione para qual residente é este registro.');
       return;
     }
     if (!description.trim()) {
-      Alert.alert('Atenção', 'Informe a descrição.');
+      Alert.alert('Faltou uma coisa', 'Descreva o que está sendo cobrado ou pago.');
       return;
     }
     if (!amount.trim() || isNaN(parseFloat(amount.replace(',', '.')))) {
-      Alert.alert('Atenção', 'Informe um valor válido.');
+      Alert.alert('Faltou uma coisa', 'Informe um valor numérico válido, ex: 3500,00.');
       return;
     }
     createMutation.mutate();

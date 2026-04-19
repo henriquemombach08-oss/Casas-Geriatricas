@@ -118,7 +118,7 @@ export default function VisitorsScreen() {
     },
     onError: (err: unknown) => {
       const error = err as { response?: { data?: { message?: string } } };
-      Alert.alert('Erro', error?.response?.data?.message ?? 'Erro ao fazer checkout.');
+      Alert.alert('Ops', error?.response?.data?.message ?? 'Não foi possível registrar a saída agora. Tente de novo.');
     },
   });
 
@@ -146,7 +146,7 @@ export default function VisitorsScreen() {
     },
     onError: (err: unknown) => {
       const error = err as { response?: { data?: { message?: string } } };
-      Alert.alert('Erro', error?.response?.data?.message ?? 'Erro ao registrar visita.');
+      Alert.alert('Ops, algo deu errado', error?.response?.data?.message ?? 'Não foi possível registrar a visita. Verifique os dados e tente de novo.');
     },
   });
 
@@ -161,7 +161,7 @@ export default function VisitorsScreen() {
 
   function handleSubmit() {
     if (!newName.trim()) {
-      Alert.alert('Atenção', 'Informe o nome do visitante.');
+      Alert.alert('Faltou uma coisa', 'Informe o nome de quem está visitando.');
       return;
     }
     createMutation.mutate();
