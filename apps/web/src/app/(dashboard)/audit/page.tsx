@@ -47,8 +47,12 @@ export default function AuditPage() {
     api
       .get<{ data: { logs: AuditLog[]; pagination: { total: number } } }>(`/audit?${params}`)
       .then((r) => {
-        setLogs(r.data.data.logs);
-        setTotal(r.data.data.pagination.total);
+        setLogs(r.data.data?.logs ?? []);
+        setTotal(r.data.data?.pagination?.total ?? 0);
+      })
+      .catch(() => {
+        setLogs([]);
+        setTotal(0);
       })
       .finally(() => setLoading(false));
   }, [page, filters]);

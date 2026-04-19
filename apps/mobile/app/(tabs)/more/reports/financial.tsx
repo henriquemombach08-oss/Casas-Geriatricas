@@ -8,7 +8,7 @@ import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
 
 interface TopDebtor {
   resident_name: string;
-  amount_overdue: number;
+  amount_due: number;
   days_overdue: number;
 }
 
@@ -20,15 +20,20 @@ interface CashFlowTrend {
 
 interface FinancialDashboard {
   summary: {
-    total_revenue: number;
-    total_expenses: number;
-    net_result: number;
+    actual_revenue: number;
+    expected_revenue: number;
     pending_amount: number;
     overdue_amount: number;
-    collection_rate: number;
+    revenue_rate: number;
   };
   top_debtors: TopDebtor[];
-  cash_flow_trend: CashFlowTrend[];
+  cash_flow: {
+    this_month: number;
+    last_month: number;
+    difference: number;
+    trend: 'up' | 'down';
+    chart_data: CashFlowTrend[];
+  };
 }
 
 interface ApiResponse {
@@ -36,8 +41,8 @@ interface ApiResponse {
   data: FinancialDashboard;
 }
 
-function formatCurrency(value: number): string {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+function formatCurrency(value: number | null | undefined): string {
+  return (value ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 export default function FinancialReportScreen() {
@@ -61,28 +66,12 @@ export default function FinancialReportScreen() {
             <>
               <Text style={styles.sectionTitle}>Resumo</Text>
 
-              {/* Full-width cards */}
               <Card style={styles.revenueCard}>
-                <Text style={styles.revenueLabel}>Receita Total</Text>
+                <Text style={styles.revenueLabel}>Receita Realizada</Text>
                 <Text style={[styles.revenueValue, { color: colors.secondary }]}>
-                  {formatCurrency(data.summary.total_revenue)}
+                  {formatCurrency(data.summary.actual_revenue)}
                 </Text>
               </Card>
-
-              <View style={styles.row}>
-                <Card style={[styles.halfCard, styles.expenseCard]}>
-                  <Text style={styles.halfLabel}>Despesas</Text>
-                  <Text style={[styles.halfValue, { color: colors.danger }]}>
-                    {formatCurrency(data.summary.total_expenses)}
-                  </Text>
-                </Card>
-                <Card style={[styles.halfCard, data.summary.net_result >= 0 ? styles.positiveCard : styles.negativeCard]}>
-                  <Text style={styles.halfLabel}>Resultado</Text>
-                  <Text style={[styles.halfValue, { color: data.summary.net_result >= 0 ? colors.secondary : colors.danger }]}>
-                    {formatCurrency(data.summary.net_result)}
-                  </Text>
-                </Card>
-              </View>
 
               <View style={styles.row}>
                 <Card style={[styles.halfCard, styles.pendingCard]}>
@@ -102,16 +91,16 @@ export default function FinancialReportScreen() {
               <Card style={styles.collectionCard}>
                 <Text style={styles.collectionLabel}>Taxa de Cobrança</Text>
                 <View style={styles.collectionRow}>
-                  <Text style={[styles.collectionValue, { color: data.summary.collection_rate >= 80 ? colors.secondary : colors.warning }]}>
-                    {data.summary.collection_rate.toFixed(1)}%
+                  <Text style={[styles.collectionValue, { color: (data.summary.revenue_rate ?? 0) >= 80 ? colors.secondary : colors.warning }]}>
+                    {(data.summary.revenue_rate ?? 0).toFixed(1)}%
                   </Text>
                   <View style={styles.barTrack}>
                     <View
                       style={[
                         styles.barFill,
                         {
-                          width: `${Math.min(data.summary.collection_rate, 100)}%`,
-                          backgroundColor: data.summary.collection_rate >= 80 ? colors.secondary : colors.warning,
+                          width: `${Math.min(data.summary.revenue_rate ?? 0, 100)}%`,
+                          backgroundColor: (data.summary.revenue_rate ?? 0) >= 80 ? colors.secondary : colors.warning,
                         },
                       ]}
                     />
@@ -132,7 +121,7 @@ export default function FinancialReportScreen() {
                       <Text style={styles.debtorName} numberOfLines={1}>{item.resident_name}</Text>
                       <Text style={styles.debtorDays}>{item.days_overdue} dias em atraso</Text>
                     </View>
-                    <Text style={styles.debtorAmount}>{formatCurrency(item.amount_overdue)}</Text>
+                    <Text style={styles.debtorAmount}>{formatCurrency(item.amount_due)}</Text>
                   </View>
                 </Card>
               ))}

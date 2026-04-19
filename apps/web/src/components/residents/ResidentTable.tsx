@@ -74,7 +74,7 @@ export function ResidentTable({ residents }: Props) {
                           className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white"
                           style={{ backgroundColor: AVATAR_BG[idx % AVATAR_BG.length] }}
                         >
-                          {r.name.charAt(0).toUpperCase()}
+                          {(r.name ?? '?').charAt(0).toUpperCase()}
                         </div>
                       )}
                       {r.hasExpiredDocuments && (

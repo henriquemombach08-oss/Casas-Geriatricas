@@ -43,9 +43,11 @@ function MedicationRow({ med }: { med: Medication }) {
             </span>
           )}
           {med.frequencyDescription && <span>{med.frequencyDescription}</span>}
-          <span className="font-mono text-xs">
-            {med.scheduledTimes.join(' · ')}
-          </span>
+          {(med.scheduledTimes ?? []).length > 0 && (
+            <span className="font-mono text-xs">
+              {med.scheduledTimes.join(' · ')}
+            </span>
+          )}
         </div>
       </div>
       <span className="text-stone-400 group-hover:text-stone-600 text-lg">›</span>

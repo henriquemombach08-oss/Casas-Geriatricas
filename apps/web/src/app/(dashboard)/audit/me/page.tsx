@@ -38,8 +38,12 @@ export default function MyAuditPage() {
     api
       .get<{ data: { logs: MyLog[]; pagination: { total: number } } }>(`/audit/me?page=${page}&limit=20`)
       .then((r) => {
-        setLogs(r.data.data.logs);
-        setTotal(r.data.data.pagination.total);
+        setLogs(r.data.data?.logs ?? []);
+        setTotal(r.data.data?.pagination?.total ?? 0);
+      })
+      .catch(() => {
+        setLogs([]);
+        setTotal(0);
       })
       .finally(() => setLoading(false));
   }, [page]);

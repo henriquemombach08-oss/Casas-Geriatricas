@@ -69,12 +69,14 @@ const CATEGORIES = [
   { value: 'other', label: 'Outro' },
 ];
 
-function formatCurrency(value: number): string {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+function formatCurrency(value: number | null | undefined): string {
+  return (value ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-function formatDate(dt: string): string {
-  return new Date(dt).toLocaleDateString('pt-BR');
+function formatDate(dt: string | null | undefined): string {
+  if (!dt) return '—';
+  const d = new Date(dt);
+  return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('pt-BR');
 }
 
 function statusColor(status: string): 'yellow' | 'green' | 'red' | 'gray' {
