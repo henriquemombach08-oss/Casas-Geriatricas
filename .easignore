@@ -1,0 +1,4 @@
+apps/web
+apps/api
+*.md
+.git
