@@ -1,5 +1,3 @@
-apps/web
-apps/api
-.claude
+.claude/worktrees
 .git
-*.md
+node_modules
