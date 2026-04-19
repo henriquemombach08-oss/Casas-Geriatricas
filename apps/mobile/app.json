@@ -10,13 +10,7 @@
       "expo-router",
       "expo-secure-store",
       "expo-notifications",
-      [
-        "expo-navigation-bar",
-        {
-          "position": "absolute",
-          "visibility": "hidden"
-        }
-      ]
+      "expo-navigation-bar"
     ],
     "android": {
       "adaptiveIcon": {
