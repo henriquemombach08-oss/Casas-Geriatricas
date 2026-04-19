@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   FlatList,
+  Image,
   RefreshControl,
   StyleSheet,
   Text,
@@ -22,6 +23,7 @@ interface Resident {
   name: string;
   birthDate: string;
   status: string;
+  photoUrl?: string | null;
   hasExpiredDocuments?: boolean;
 }
 
@@ -69,7 +71,12 @@ function statusLabel(status: string): string {
 }
 
 const AVATAR_COLORS = [
-  '#2563EB', '#10B981', '#F59E0B', '#EF4444', '#7C3AED', '#EA580C',
+  '#92400E', // amber-800
+  '#064E3B', // emerald-900
+  '#9A3412', // orange-800
+  '#7C3AED', // purple
+  '#78350F', // amber-900
+  '#57534E', // stone-600
 ];
 
 function avatarColor(name: string): string {
@@ -130,11 +137,15 @@ export default function ResidentsScreen() {
       <TouchableOpacity
         style={styles.item}
         onPress={() => router.push(`/(tabs)/residents/${item.id}`)}
-        activeOpacity={0.7}
+        activeOpacity={0.75}
       >
-        <View style={[styles.avatar, { backgroundColor: bgColor }]}>
-          <Text style={styles.avatarText}>{initials}</Text>
-        </View>
+        {item.photoUrl ? (
+          <Image source={{ uri: item.photoUrl }} style={styles.avatar} />
+        ) : (
+          <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: bgColor }]}>
+            <Text style={styles.avatarText}>{initials}</Text>
+          </View>
+        )}
         <View style={styles.itemInfo}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{item.name}</Text>
@@ -214,14 +225,14 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   searchInput: {
-    backgroundColor: colors.background,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
+    backgroundColor: colors.stone100,
+    borderRadius: radius.xl,
+    paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
     fontSize: fontSize.md,
     color: colors.text,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.stone200,
   },
   list: {
     padding: spacing.lg,
@@ -233,14 +244,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.card,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     padding: spacing.md,
     gap: spacing.md,
+    shadowColor: colors.stone700,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  avatarPlaceholder: {
     justifyContent: 'center',
     alignItems: 'center',
   },

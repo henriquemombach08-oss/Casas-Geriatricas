@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import {
   RefreshControl,
   ScrollView,
@@ -15,7 +15,6 @@ import { Screen } from '@/components/Screen';
 import { api } from '@/lib/api';
 import { decodeTokenPayload, getToken } from '@/lib/auth';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
-import { useCallback, useState } from 'react';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -133,17 +132,19 @@ export default function DashboardScreen() {
   const medsCount = medsQuery.data?.total ?? 0;
 
   const stats = [
-    { label: 'Residentes Ativos', value: residentsCount, emoji: '👴', color: colors.primary },
-    { label: 'Funcionários', value: staffCount, emoji: '🧑‍💼', color: colors.secondary },
-    { label: 'Visitantes agora', value: visitorsCount, emoji: '👥', color: colors.warning },
-    { label: 'Medicamentos (2h)', value: medsCount, emoji: '💊', color: colors.danger },
+    { label: 'Residentes', value: residentsCount, icon: '🏡', color: colors.primary, bg: colors.primaryLight },
+    { label: 'Equipe', value: staffCount, icon: '🤝', color: colors.secondary, bg: colors.secondaryLight },
+    { label: 'Visitas hoje', value: visitorsCount, icon: '👥', color: colors.accent, bg: colors.accentLight },
+    { label: 'Medicamentos', value: medsCount, icon: '💊', color: colors.danger, bg: colors.dangerLight },
   ];
 
   const quickActions = [
-    { label: '+ Residente', route: '/(tabs)/residents/new' as const, color: colors.primary },
-    { label: '+ Visita', route: '/(tabs)/visitors' as const, color: colors.secondary },
-    { label: '+ Funcionário', route: '/(tabs)/more/staff' as const, color: colors.warning },
+    { label: 'Novo residente', route: '/(tabs)/residents/new' as const, color: colors.primary },
+    { label: 'Registrar visita', route: '/(tabs)/visitors' as const, color: colors.secondary },
+    { label: 'Novo funcionário', route: '/(tabs)/more/staff' as const, color: colors.stone600 },
   ];
+
+  const firstName = userName ? userName.split(' ')[0] : '';
 
   return (
     <Screen>
@@ -151,39 +152,42 @@ export default function DashboardScreen() {
         style={styles.scroll}
         contentContainerStyle={styles.content}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} colors={[colors.primary]} />
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} colors={[colors.primary]} tintColor={colors.primary} />
         }
       >
         <View style={styles.header}>
           <Text style={styles.greeting}>
-            {getGreeting()}{userName ? `, ${userName.split(' ')[0]}` : ''}!
+            {getGreeting()}{firstName ? `, ${firstName}` : ''}
           </Text>
-          <Text style={styles.headerSub}>Visão geral da casa</Text>
+          <Text style={styles.headerSub}>Como está a casa hoje?</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>Resumo</Text>
+        <Text style={styles.sectionTitle}>Visão geral</Text>
         <View style={styles.statsGrid}>
           {stats.map((stat) => (
             <Card key={stat.label} style={styles.statCard}>
-              <Text style={styles.statEmoji}>{stat.emoji}</Text>
+              <View style={[styles.iconCircle, { backgroundColor: stat.bg }]}>
+                <Text style={styles.statIcon}>{stat.icon}</Text>
+              </View>
               <Text style={[styles.statValue, { color: stat.color }]}>
-                {isLoading ? '–' : String(stat.value)}
+                {isLoading ? '—' : String(stat.value)}
               </Text>
               <Text style={styles.statLabel}>{stat.label}</Text>
             </Card>
           ))}
         </View>
 
-        <Text style={styles.sectionTitle}>Ações rápidas</Text>
-        <View style={styles.actionsRow}>
+        <Text style={styles.sectionTitle}>Acesso rápido</Text>
+        <View style={styles.actionsCol}>
           {quickActions.map((action) => (
             <TouchableOpacity
               key={action.label}
-              style={[styles.actionBtn, { backgroundColor: action.color }]}
+              style={[styles.actionBtn, { borderLeftColor: action.color }]}
               onPress={() => router.push(action.route)}
-              activeOpacity={0.8}
+              activeOpacity={0.75}
             >
-              <Text style={styles.actionBtnText}>{action.label}</Text>
+              <Text style={[styles.actionBtnText, { color: action.color }]}>{action.label}</Text>
+              <Text style={styles.actionArrow}>›</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -193,32 +197,36 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-  },
+  scroll: { flex: 1 },
   content: {
     padding: spacing.lg,
     paddingBottom: spacing.xxxl,
   },
   header: {
     marginBottom: spacing.xl,
+    paddingBottom: spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.stone200,
   },
   greeting: {
     fontSize: fontSize.xxl,
     fontWeight: fontWeight.bold,
-    color: colors.text,
+    color: colors.stone900,
+    letterSpacing: -0.3,
   },
   headerSub: {
     fontSize: fontSize.md,
-    color: colors.textSecondary,
+    color: colors.stone500,
     marginTop: spacing.xs,
   },
   sectionTitle: {
-    fontSize: fontSize.lg,
+    fontSize: fontSize.sm,
     fontWeight: fontWeight.semibold,
-    color: colors.text,
+    color: colors.stone500,
     marginBottom: spacing.md,
     marginTop: spacing.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -230,34 +238,51 @@ const styles = StyleSheet.create({
     width: '47%',
     alignItems: 'center',
     paddingVertical: spacing.xl,
+    gap: spacing.sm,
   },
-  statEmoji: {
-    fontSize: 28,
-    marginBottom: spacing.sm,
+  iconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xs,
   },
+  statIcon: { fontSize: 22 },
   statValue: {
     fontSize: fontSize.xxxl,
     fontWeight: fontWeight.bold,
-    marginBottom: spacing.xs,
   },
   statLabel: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: colors.stone500,
     textAlign: 'center',
   },
-  actionsRow: {
-    flexDirection: 'row',
+  actionsCol: {
     gap: spacing.sm,
   },
   actionBtn: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
+    backgroundColor: colors.card,
+    borderRadius: radius.xl,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    borderLeftWidth: 3,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: colors.stone700,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   actionBtnText: {
-    color: colors.white,
-    fontSize: fontSize.sm,
+    fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
+  },
+  actionArrow: {
+    fontSize: 22,
+    color: colors.stone400,
+    lineHeight: 24,
   },
 });

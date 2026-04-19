@@ -1,7 +1,9 @@
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import {
   Alert,
   FlatList,
+  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -30,6 +32,7 @@ interface StaffMember {
   customRole?: string;
   phone?: string;
   active: boolean;
+  photo?: string | null;
 }
 
 interface StaffResponse {
@@ -58,7 +61,7 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
-const AVATAR_COLORS = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B', '#EF4444'];
+const AVATAR_COLORS = ['#92400E', '#064E3B', '#7C3AED', '#9A3412', '#57534E'];
 function avatarColor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash += name.charCodeAt(i);
@@ -77,6 +80,25 @@ export default function StaffScreen() {
   const [customRole, setCustomRole] = useState('');
   const [phone, setPhone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [photo, setPhoto] = useState<string | null>(null);
+
+  async function handlePickPhoto() {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão necessária', 'Precisamos acessar sua galeria para escolher a foto.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.6,
+      base64: true,
+    });
+    if (!result.canceled && result.assets[0]?.base64) {
+      setPhoto(`data:image/jpeg;base64,${result.assets[0].base64}`);
+    }
+  }
 
   const staffQuery = useQuery({
     queryKey: ['staff'],
@@ -97,6 +119,7 @@ export default function StaffScreen() {
         role,
         customRole: role === 'other' ? customRole.trim() : undefined,
         phone: phone.trim() || undefined,
+        photo: photo ?? undefined,
       });
     },
     onSuccess: () => {
@@ -107,7 +130,7 @@ export default function StaffScreen() {
     },
     onError: (err: unknown) => {
       const error = err as { response?: { data?: { message?: string } } };
-      Alert.alert('Erro', error?.response?.data?.message ?? 'Erro ao criar funcionário.');
+      Alert.alert('Ops, algo deu errado', error?.response?.data?.message ?? 'Não foi possível cadastrar o funcionário agora. Verifique os dados e tente de novo.');
     },
   });
 
@@ -118,15 +141,16 @@ export default function StaffScreen() {
     setRole('caregiver');
     setCustomRole('');
     setPhone('');
+    setPhoto(null);
   }
 
   function handleSubmit() {
     if (!name.trim() || !email.trim() || !password.trim()) {
-      Alert.alert('Atenção', 'Nome, e-mail e senha são obrigatórios.');
+      Alert.alert('Faltou uma coisa', 'Nome, e-mail e senha são obrigatórios para criar um acesso.');
       return;
     }
     if (role === 'other' && !customRole.trim()) {
-      Alert.alert('Atenção', 'Informe o cargo personalizado.');
+      Alert.alert('Faltou uma coisa', 'Informe o cargo do funcionário.');
       return;
     }
     createMutation.mutate();
@@ -143,9 +167,13 @@ export default function StaffScreen() {
     return (
       <Card style={styles.item}>
         <View style={styles.itemRow}>
-          <View style={[styles.avatar, { backgroundColor: bg }]}>
-            <Text style={styles.avatarText}>{initials}</Text>
-          </View>
+          {item.photo ? (
+            <Image source={{ uri: item.photo }} style={styles.avatar} />
+          ) : (
+            <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: bg }]}>
+              <Text style={styles.avatarText}>{initials}</Text>
+            </View>
+          )}
           <View style={styles.itemInfo}>
             <View style={styles.nameRow}>
               <Text style={styles.name}>{item.name}</Text>
@@ -212,6 +240,23 @@ export default function StaffScreen() {
             <Text style={styles.sheetTitle}>Novo Funcionário</Text>
 
             <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+              {/* Photo picker */}
+              <TouchableOpacity style={styles.photoPickerBtn} onPress={handlePickPhoto} activeOpacity={0.8}>
+                {photo ? (
+                  <Image source={{ uri: photo }} style={styles.photoPickerPreview} />
+                ) : (
+                  <View style={styles.photoPickerEmpty}>
+                    <Text style={styles.photoPickerIcon}>📷</Text>
+                    <Text style={styles.photoPickerLabel}>Foto do funcionário</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              {photo && (
+                <TouchableOpacity onPress={() => setPhoto(null)} style={styles.removePhotoBtn}>
+                  <Text style={styles.removePhotoText}>Remover foto</Text>
+                </TouchableOpacity>
+              )}
+
               <Text style={styles.fieldLabel}>Nome *</Text>
               <TextInput
                 style={styles.input}
@@ -337,9 +382,11 @@ const styles = StyleSheet.create({
   item: {},
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  avatarPlaceholder: {
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -427,4 +474,28 @@ const styles = StyleSheet.create({
   confirmBtn: { flex: 2, backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: spacing.md, alignItems: 'center' },
   btnDisabled: { opacity: 0.6 },
   confirmBtnText: { color: colors.white, fontSize: fontSize.md, fontWeight: fontWeight.semibold },
+  photoPickerBtn: {
+    alignSelf: 'center',
+    marginBottom: spacing.sm,
+  },
+  photoPickerPreview: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  photoPickerEmpty: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.stone100,
+    borderWidth: 2,
+    borderColor: colors.stone200,
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoPickerIcon: { fontSize: 22 },
+  photoPickerLabel: { fontSize: 10, color: colors.stone500, textAlign: 'center', marginTop: 2 },
+  removePhotoBtn: { alignSelf: 'center', paddingVertical: spacing.xs },
+  removePhotoText: { fontSize: fontSize.xs, color: colors.danger },
 });

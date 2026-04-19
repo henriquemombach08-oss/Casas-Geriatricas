@@ -126,6 +126,7 @@ const createSchema = z.object({
   medicalHistory: medicalHistorySchema.optional(),
   notes: z.string().max(1000).optional(),
   specialNeeds: z.string().max(1000).optional(),
+  photoUrl: z.string().optional(),
 });
 
 // For updates, all fields are optional

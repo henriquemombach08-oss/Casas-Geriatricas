@@ -202,6 +202,7 @@ model User {
   phone        String?   @db.VarChar(20)
   pinHash        String?   @map("pin_hash")
   active         Boolean   @default(true)
+  photo          String?
   lastLogin      DateTime? @map("last_login")
   expoPushToken  String?   @map("expo_push_token")
   createdAt      DateTime  @default(now()) @map("created_at")

@@ -1,7 +1,9 @@
 import { useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,8 +16,6 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/theme';
-
-// ─── Formatters ──────────────────────────────────────────────────────────────
 
 function maskCPF(raw: string): string {
   const digits = raw.replace(/\D/g, '').slice(0, 11);
@@ -39,8 +39,6 @@ function stripDigits(v: string): string {
   return v.replace(/\D/g, '');
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface CreateResidentPayload {
   name: string;
   birthDate: string;
@@ -52,6 +50,7 @@ interface CreateResidentPayload {
   emergencyContactName: string;
   emergencyContactPhone: string;
   admissionDate: string;
+  photoUrl?: string;
 }
 
 interface CreateResidentResponse {
@@ -75,7 +74,7 @@ function InputField({
         {label}
         {required ? <Text style={formStyles.required}> *</Text> : null}
       </Text>
-      <TextInput style={formStyles.input} placeholderTextColor={colors.gray400} {...props} />
+      <TextInput style={formStyles.input} placeholderTextColor={colors.stone400} {...props} />
     </View>
   );
 }
@@ -93,6 +92,28 @@ export default function NewResidentScreen() {
   const [address, setAddress] = useState('');
   const [emergencyContactName, setEmergencyContactName] = useState('');
   const [emergencyContactPhone, setEmergencyContactPhone] = useState('');
+  const [photo, setPhoto] = useState<string | null>(null);
+
+  async function handlePickPhoto() {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão necessária', 'Precisamos acessar sua galeria para escolher uma foto.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.6,
+      base64: true,
+    });
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      if (asset.base64) {
+        setPhoto(`data:image/jpeg;base64,${asset.base64}`);
+      }
+    }
+  }
 
   const mutation = useMutation({
     mutationFn: async (payload: CreateResidentPayload) => {
@@ -108,36 +129,36 @@ export default function NewResidentScreen() {
       const msg =
         error?.response?.data?.message ??
         error?.response?.data?.error ??
-        'Não foi possível criar o residente.';
-      Alert.alert('Erro', msg);
+        'Não foi possível salvar o residente agora. Verifique os dados e tente de novo.';
+      Alert.alert('Ops, algo deu errado', msg);
     },
   });
 
   function handleSubmit() {
     if (!name.trim()) {
-      Alert.alert('Atenção', 'Nome é obrigatório.');
+      Alert.alert('Faltou uma coisa', 'Precisamos do nome completo do residente.');
       return;
     }
     if (!birthDate.trim()) {
-      Alert.alert('Atenção', 'Data de nascimento é obrigatória (AAAA-MM-DD).');
+      Alert.alert('Faltou uma coisa', 'Informe a data de nascimento no formato AAAA-MM-DD.');
       return;
     }
     if (!gender) {
-      Alert.alert('Atenção', 'Selecione o gênero.');
+      Alert.alert('Faltou uma coisa', 'Selecione o gênero do residente.');
       return;
     }
     const cpfDigits = stripDigits(cpf);
     if (cpfDigits.length !== 11) {
-      Alert.alert('Atenção', 'CPF deve ter 11 dígitos.');
+      Alert.alert('CPF incompleto', 'O CPF precisa ter 11 dígitos.');
       return;
     }
     if (!emergencyContactName.trim() || emergencyContactName.trim().length < 3) {
-      Alert.alert('Atenção', 'Nome do contato de emergência é obrigatório (mín. 3 caracteres).');
+      Alert.alert('Faltou uma coisa', 'Informe o nome do contato de emergência.');
       return;
     }
     const ecPhone = stripDigits(emergencyContactPhone);
     if (ecPhone.length < 10) {
-      Alert.alert('Atenção', 'Telefone de emergência é obrigatório (10 ou 11 dígitos).');
+      Alert.alert('Faltou uma coisa', 'Informe o telefone do contato de emergência.');
       return;
     }
 
@@ -154,6 +175,7 @@ export default function NewResidentScreen() {
       emergencyContactName: emergencyContactName.trim(),
       emergencyContactPhone: ecPhone,
       admissionDate: today,
+      photoUrl: photo ?? undefined,
     });
   }
 
@@ -163,6 +185,26 @@ export default function NewResidentScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+
+        {/* Photo */}
+        <View style={styles.photoSection}>
+          <TouchableOpacity style={styles.photoContainer} onPress={handlePickPhoto} activeOpacity={0.8}>
+            {photo ? (
+              <Image source={{ uri: photo }} style={styles.photoPreview} />
+            ) : (
+              <View style={styles.photoPlaceholder}>
+                <Text style={styles.photoPlaceholderIcon}>📷</Text>
+                <Text style={styles.photoPlaceholderText}>Adicionar foto</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          {photo && (
+            <TouchableOpacity onPress={() => setPhoto(null)} style={styles.removePhotoBtn}>
+              <Text style={styles.removePhotoText}>Remover foto</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
         <Text style={styles.sectionTitle}>Dados pessoais</Text>
 
         <InputField
@@ -194,12 +236,7 @@ export default function NewResidentScreen() {
                 onPress={() => setGender(opt.value)}
                 activeOpacity={0.7}
               >
-                <Text
-                  style={[
-                    styles.radioText,
-                    gender === opt.value && styles.radioTextSelected,
-                  ]}
-                >
+                <Text style={[styles.radioText, gender === opt.value && styles.radioTextSelected]}>
                   {opt.label}
                 </Text>
               </TouchableOpacity>
@@ -272,83 +309,92 @@ export default function NewResidentScreen() {
 }
 
 const formStyles = StyleSheet.create({
-  inputGroup: {
-    marginBottom: spacing.md,
-  },
+  inputGroup: { marginBottom: spacing.md },
   label: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.medium,
-    color: colors.text,
+    color: colors.stone700,
     marginBottom: spacing.xs,
   },
-  required: {
-    color: colors.danger,
-  },
+  required: { color: colors.danger },
   input: {
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
+    borderColor: colors.stone200,
+    borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
     fontSize: fontSize.md,
     color: colors.text,
-    backgroundColor: colors.card,
+    backgroundColor: colors.stone50,
   },
 });
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    padding: spacing.lg,
-    paddingBottom: spacing.xxxl,
-  },
-  sectionTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.semibold,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  radioRow: {
-    flexDirection: 'row',
+  flex: { flex: 1, backgroundColor: colors.background },
+  content: { padding: spacing.lg, paddingBottom: spacing.xxxl },
+  photoSection: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
     gap: spacing.sm,
   },
+  photoContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    overflow: 'hidden',
+  },
+  photoPreview: { width: 100, height: 100 },
+  photoPlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.stone100,
+    borderWidth: 2,
+    borderColor: colors.stone200,
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  photoPlaceholderIcon: { fontSize: 24 },
+  photoPlaceholderText: {
+    fontSize: fontSize.xs,
+    color: colors.stone500,
+    textAlign: 'center',
+  },
+  removePhotoBtn: { paddingVertical: spacing.xs },
+  removePhotoText: { fontSize: fontSize.sm, color: colors.danger },
+  sectionTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.semibold,
+    color: colors.stone500,
+    marginBottom: spacing.md,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  radioRow: { flexDirection: 'row', gap: spacing.sm },
   radioOption: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
+    borderColor: colors.stone200,
+    borderRadius: radius.lg,
     paddingVertical: spacing.sm,
     alignItems: 'center',
-    backgroundColor: colors.card,
+    backgroundColor: colors.stone50,
   },
   radioSelected: {
     borderColor: colors.primary,
     backgroundColor: colors.primaryLight,
   },
-  radioText: {
-    fontSize: fontSize.sm,
-    color: colors.text,
-  },
-  radioTextSelected: {
-    color: colors.primary,
-    fontWeight: fontWeight.semibold,
-  },
+  radioText: { fontSize: fontSize.sm, color: colors.stone700 },
+  radioTextSelected: { color: colors.primary, fontWeight: fontWeight.semibold },
   submitBtn: {
     backgroundColor: colors.primary,
-    borderRadius: radius.md,
+    borderRadius: radius.xl,
     paddingVertical: spacing.lg,
     alignItems: 'center',
     marginTop: spacing.xl,
   },
-  submitBtnDisabled: {
-    opacity: 0.6,
-  },
-  submitBtnText: {
-    color: colors.white,
-    fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
-  },
+  submitBtnDisabled: { opacity: 0.6 },
+  submitBtnText: { color: colors.white, fontSize: fontSize.md, fontWeight: fontWeight.semibold },
 });
